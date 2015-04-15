@@ -1,8 +1,0 @@
-test:
-  adapter: postgresql
-  host: localhost
-  encoding: unicode
-  database: codeship_test
-  username: ubuntu
-  password:
-  pool: 5
