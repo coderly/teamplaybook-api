@@ -14,6 +14,13 @@ gem 'pg'
 
 gem 'active_model_serializers'
 
+group :development, :test do
+  gem 'pry-rails'
+  gem 'pry'
+
+  gem 'rspec-rails', '~> 3.0'
+end
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
