@@ -9,10 +9,9 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-
 gem 'pg'
-
 gem 'active_model_serializers'
+gem 'hashie'
 
 group :development, :test do
   gem 'pry-rails'
