@@ -3,7 +3,7 @@ require 'rails_helper'
 describe "Ping API" do
 
 
-  it 'gets a pong when pinging unauthed' do
+  it 'gets a pong when pinging unauthenticated' do
     get "/ping"
 
     expect(response).to be_success

@@ -13,7 +13,7 @@ class ApplicationController < ActionController::API
   private
 
   def has_organization_subdomain?
-    request.subdomain.present? && !NON_ORGANIZATION_SUBDOMAINS.include?(request.subdomain.to_sym)
+    request.subdomain.present? && !Settings.non_organization_subdomains.include?(request.subdomain)
   end
 
   def not_found
