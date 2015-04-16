@@ -13,6 +13,8 @@ describe "Ping API" do
   it "returns the organization name" do
     create(:organization, name: "Test Organization", subdomain: "testorganization")
 
+    @request.host = "#{testorganization}.example.com"
+
     get "/ping"
 
     expect(response).to be_success
