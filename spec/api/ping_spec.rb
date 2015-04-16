@@ -10,4 +10,14 @@ describe "Ping API" do
     expect(json.ping).to eq "pong"
   end
 
+  it "returns the organization name" do
+    create(:organization, name: "Test Organization", subdomain: "testorganization")
+
+    get "/ping"
+
+    expect(response).to be_success
+    expect(json.ping).to eq "pong"
+    expect(json.organization_name).to eq "Test Organization"
+  end
+
 end
