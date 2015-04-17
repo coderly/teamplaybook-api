@@ -1,0 +1,17 @@
+defaults: &defaults
+  non_organization_subdomains:
+    - www
+    - blog
+    - podcast
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+
+staging:
+  <<: *defaults
