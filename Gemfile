@@ -20,6 +20,7 @@ group :development, :test do
 
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
+  gem 'timecop'
 end
 
 # To use ActiveModel has_secure_password

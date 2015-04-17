@@ -4,10 +4,15 @@ describe "Ping API" do
 
 
   it 'gets a pong when pinging unauthenticated' do
+    Timecop.freeze(2014, 12,7)
+
     get "/ping"
 
     expect(response).to be_success
     expect(json.ping).to eq "pong"
+    expect(json.current_time).to eq "2014-12-07T00:00:00.000Z"
+
+    Timecop.return
   end
 
   it "returns the organization name" do
