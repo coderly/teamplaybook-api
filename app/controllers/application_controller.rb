@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::API
+  include ActionView::Layouts
+  include ActionController::ImplicitRender
+  
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found
   before_filter :fetch_organization
 

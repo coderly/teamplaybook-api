@@ -13,6 +13,8 @@ gem 'pg'
 gem 'active_model_serializers'
 gem 'hashie'
 gem 'settingslogic'
+gem 'activeadmin', github: 'activeadmin'
+gem 'devise'#to allow active admin authentication.
 
 group :development, :test do
   gem 'pry-rails'
