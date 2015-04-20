@@ -12,12 +12,15 @@ gem 'spring', :group => :development
 gem 'pg'
 gem 'active_model_serializers'
 gem 'hashie'
+gem 'settingslogic'
 
 group :development, :test do
   gem 'pry-rails'
   gem 'pry'
 
   gem 'rspec-rails', '~> 3.0'
+  gem 'factory_girl_rails'
+  gem 'timecop'
 end
 
 # To use ActiveModel has_secure_password
