@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found
   before_filter :fetch_organization
-  acts_as_token_authentication_handler_for User
 
   protected
 
