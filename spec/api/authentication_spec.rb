@@ -8,8 +8,8 @@ describe "Authentication" do
     
       post '/users/tokens', user: { email: 'test@test.com', password: 'password' }
     
-      expect(json.authentication_token).to eq 'xcccsswwee'
-      expect(json.email).to eq 'test@test.com'
+      expect(json.data.authentication_token).to eq 'xcccsswwee'
+      expect(json.data.email).to eq 'test@test.com'
     end
   
     it "should authenticate with resulting token" do
@@ -17,10 +17,9 @@ describe "Authentication" do
   
       post '/users/tokens', user: { email: 'test@test.com', password: 'password' }
   
-      token_authorize(json.user_token, json.user_email)
-      get '/me'
+      get '/me', {}, {"X-User-Email" => json.data.email, "X-User-Token" => json.data.authentication_token}
     
-      expect(json.user.email).to eq 'test@test.com'
+      expect(json.data.email).to eq 'test@test.com'
     end
   end
 

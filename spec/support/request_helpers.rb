@@ -9,13 +9,13 @@ module Requests
 
   module AuthorizationHelpers
     def token_authorize(token, email)
-      header("X-User-Email", email)
-      header("X-User-Token", token)
+      headers.merge!("X-User-Email" => email)
+      headers.merge!("X-User-Token" => token)
     end
   
     def token_unauthorize!
-      header("X-User-Email", nil)
-      header("X-User-Token", nil)
+      headers.delete "X-User-Email"
+      headers.delete "X-User-Token"
     end
   end
 end
