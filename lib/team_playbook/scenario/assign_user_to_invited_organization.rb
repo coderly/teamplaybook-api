@@ -3,23 +3,21 @@ module TeamPlaybook
     class AssignUserToInvitedOrganizations
 
       def call(user)
-        invitations = invitations_for(user)
-        invitations.each do |invitation|
-          connect_invitation_to_user(invitation, user)
+        organization_users = organization_users_for(user)
+        organization_users.each do |organization_user|
+          connect_organization_user_to_user(organization_user, user)
         end
       end
 
       private
 
-      def invitations_for(user)
-        Invitation.where(email: user.email)
+      def organization_users_for(user)
+        OrganizationUser.where(email: user.email)
       end
 
-      def connect_invitation_to_user(invitation, user)
-        invitation.update_attribute :user, user
+      def connect_organization_user_to_user(organization_user, user)
+        organization_user.update_attribute :user, user
       end
-
-
     end
   end
 end

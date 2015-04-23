@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20150423033007) do
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true, using: :btree
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true, using: :btree
 
-  create_table "invitations", force: :cascade do |t|
+  create_table "organization_users", force: :cascade do |t|
     t.string   "email",           null: false
     t.integer  "organization_id", null: false
     t.integer  "user_id"

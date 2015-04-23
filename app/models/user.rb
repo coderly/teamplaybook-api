@@ -8,8 +8,8 @@ class User < ActiveRecord::Base
 
   before_save :ensure_authentication_token
 
-  has_many :invitations
-  has_many :organizations, through: :invitations
+  has_many :organization_users
+  has_many :organizations, through: :organization_users
 
   def ensure_authentication_token
     if authentication_token.blank?

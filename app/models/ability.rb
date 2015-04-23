@@ -3,7 +3,7 @@ class Ability
 
   def initialize(user, organization)
     if organization.user ==  user
-      can :manage, Invitation
+      can :manage, OrganizationUser
     end
   end
 end

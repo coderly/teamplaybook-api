@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-describe "Invitations service" do
+describe "organization_users service" do
 
-  describe "POST /invitation" do
-    it "should create an invitation for an unregistered user" do
+  describe "POST /organization_user" do
+    it "should create an organization_user for an unregistered user" do
       owner = create(:user)
       organization = create(:organization, user: owner)
 
       host! "#{organization.subdomain}.example.com"
 
-      post '/invitations', {data:
+      post '/organization_users', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
@@ -19,14 +19,14 @@ describe "Invitations service" do
       expect(json.data.links.user.linkage).to be_nil
     end
 
-    it "should create an invitation for a registered user and asociate the user with the organization" do
+    it "should create an organization_user for a registered user and asociate the user with the organization" do
       owner = create(:user)
       organization = create(:organization, user: owner)
       user = create(:user, email: 'test@example.com')
 
       host! "#{organization.subdomain}.example.com"
 
-      post '/invitations', {data:
+      post '/organization_users', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
@@ -37,13 +37,13 @@ describe "Invitations service" do
       expect(json.data.links.user.linkage.id).to eq user.id.to_s
     end
 
-    it "should not create an invitation if the user is not the organization's owner" do
+    it "should not create an organization_user if the user is not the organization's owner" do
       user = create(:user)
       organization = create(:organization)
 
       host! "#{organization.subdomain}.example.com"
 
-      post '/invitations', {data:
+      post '/organization_users', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 
