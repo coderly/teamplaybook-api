@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions
 
+  rescue_from CanCan::AccessDenied, with: :not_authorized
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found
+  
   before_filter :fetch_organization
 
   protected
@@ -24,6 +26,10 @@ class ApplicationController < ActionController::API
     render json: {error: "Not Found"}, status: :not_found
   end
 
+  def not_authorized
+    render json: {error: "Not Authorized"}, status: :unauthorized
+  end
+
   def has_subdomain?
     request.subdomain.present?
   end
@@ -31,7 +37,4 @@ class ApplicationController < ActionController::API
   def has_non_organization_subdomain?
     Settings.non_organization_subdomains.include?(request.subdomain)
   end
-
-
-
 end
