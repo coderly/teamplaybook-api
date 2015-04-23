@@ -18,6 +18,6 @@ class OrganizationsController < ApplicationController
   private
 
   def organization_params
-    params.require(:organization).permit(:name, :subdomain)
+    params.require(:data).permit(:name, :subdomain)
   end
 end
