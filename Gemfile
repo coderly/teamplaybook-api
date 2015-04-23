@@ -10,9 +10,11 @@ gem 'rails-api'
 gem 'spring', :group => :development
 
 gem 'pg'
-gem 'active_model_serializers'
+gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
 gem 'hashie'
 gem 'settingslogic'
+gem 'devise'
+gem 'simple_token_authentication', '~> 1.0'
 
 group :development, :test do
   gem 'pry-rails'

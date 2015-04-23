@@ -1,4 +1,15 @@
-Rails.application.routes.draw do
+Rails.application.routes.draw do 
+  devise_for :users, only: [:sessions, :registrations],
+   controllers: { sessions: "tokens", registrations: "users" },
+   path_names: {
+     sign_in: 'tokens'
+   }
+
+  get '/me', to: 'me#show'
+
+  resources :organizations, only: :create
+  resource :organization
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
