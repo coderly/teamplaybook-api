@@ -2,7 +2,7 @@ require 'team_playbook/scenario/create_invitation'
 
 class InvitationsController < ApplicationController
   def create
-    invitation = TeamPlaybook::Scenario::CreateInvitation.new.call(invitation_params, organization)
+    invitation = TeamPlaybook::Scenario::CreateInvitation.new.call(invitation_params, @organization)
     if invitation.persisted?
       render json: invitation, status: 200
     else

@@ -13,7 +13,7 @@ module TeamPlaybook
 
       private
 
-      def create_organization(invitation_params, organization)
+      def create_invitation(invitation_params, organization)
         invitation_params[:organization_id] = organization.id
         return Invitation.create(invitation_params)
       end
