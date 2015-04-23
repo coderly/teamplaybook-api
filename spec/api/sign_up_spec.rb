@@ -7,7 +7,7 @@ describe "Sign up" do
       organization = create(:organization)
       invitation = create(:invitation, organization: organization, email: 'test@test.com')
 
-      post '/users', user: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
+      post '/users', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
 
       user_id = json.data.id
 
