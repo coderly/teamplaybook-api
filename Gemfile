@@ -9,7 +9,7 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors'
 
 gem 'pg'
 gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
