@@ -7,6 +7,9 @@ Rails.application.routes.draw do
 
   get '/me', to: 'me#show'
 
+  resources :organizations, only: :create
+  resource :organization
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
