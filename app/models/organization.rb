@@ -3,5 +3,5 @@ class Organization < ActiveRecord::Base
     message: "%{value} is not a valid subdomain." }
   validates :name, presence: true
 
-  belongs_to :user
+  belongs_to :owner, class_name: "User"
 end

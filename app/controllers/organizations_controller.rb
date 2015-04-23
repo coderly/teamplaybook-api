@@ -3,7 +3,7 @@ class OrganizationsController < ApplicationController
 
   def create
     organization = Organization.new(organization_params)
-    organization.user = current_user
+    organization.owner = current_user
     if organization.save
       render json: organization, status: 200, serializer: OrganizationSerializer
     else

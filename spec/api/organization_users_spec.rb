@@ -5,7 +5,7 @@ describe "organization_users service" do
   describe "POST /organization_user" do
     it "should create an organization_user for an unregistered user" do
       owner = create(:user)
-      organization = create(:organization, user: owner)
+      organization = create(:organization, owner: owner)
 
       host! "#{organization.subdomain}.example.com"
 
@@ -21,7 +21,7 @@ describe "organization_users service" do
 
     it "should create an organization_user for a registered user and asociate the user with the organization" do
       owner = create(:user)
-      organization = create(:organization, user: owner)
+      organization = create(:organization, owner: owner)
       user = create(:user, email: 'test@example.com')
 
       host! "#{organization.subdomain}.example.com"

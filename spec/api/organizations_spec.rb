@@ -12,8 +12,8 @@ describe "Organizations service" do
 
       expect(json.data.name).to eq "test organization"
       expect(json.data.subdomain).to eq "testorganization"
-      expect(json.data.links.user.linkage.type).to eq "users"
-      expect(json.data.links.user.linkage.id).to eq user.id.to_s
+      expect(json.data.links.owner.linkage.type).to eq "users"
+      expect(json.data.links.owner.linkage.id).to eq user.id.to_s
     end
 
     it "should save the organization and return the organization when using its subdomain" do
@@ -28,8 +28,8 @@ describe "Organizations service" do
       get "/organization", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
       expect(json.data.name).to eq "test organization"
       expect(json.data.subdomain).to eq "testorganization"
-      expect(json.data.links.user.linkage.type).to eq "users"
-      expect(json.data.links.user.linkage.id).to eq user.id.to_s
+      expect(json.data.links.owner.linkage.type).to eq "users"
+      expect(json.data.links.owner.linkage.id).to eq user.id.to_s
     end
 
   end
