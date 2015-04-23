@@ -9,7 +9,7 @@ describe "Invitations service" do
 
       host! "#{organization.subdomain}.example.com"
 
-      post '/invitations', {invitation:
+      post '/invitations', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
@@ -26,11 +26,9 @@ describe "Invitations service" do
 
       host! "#{organization.subdomain}.example.com"
 
-      post '/invitations', {invitation:
+      post '/invitations', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
-      binding.pry
 
       expect(json.data.email).to eq 'test@example.com'
       expect(json.data.links.organization.linkage.type).to eq "organizations"
@@ -45,7 +43,7 @@ describe "Invitations service" do
 
       host! "#{organization.subdomain}.example.com"
 
-      post '/invitations', {invitation:
+      post '/invitations', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 

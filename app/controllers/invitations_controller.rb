@@ -13,6 +13,6 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.require(:invitation).permit(:email, :subdomain)
+    params.require(:data).permit(:email, :subdomain)
   end
 end
