@@ -29,7 +29,7 @@ module TeamPlaybook
       end
 
       def send_invitation_email(invitation)
-        InvitationMailer.invitation_email(invitation).deliver
+        InvitationMailer.invitation_email(invitation).deliver_now
       end
 
     end

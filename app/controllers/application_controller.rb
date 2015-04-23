@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
+  include CanCan::ControllerAdditions
+
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found
   before_filter :fetch_organization
 
@@ -6,6 +8,10 @@ class ApplicationController < ActionController::API
 
   def fetch_organization
     @organization = Organization.find_by_subdomain!(request.subdomain) if has_organization_subdomain?
+  end
+
+  def current_ability
+    @current_ability ||= Ability.new(current_user, @organization)
   end
 
   private
@@ -25,5 +31,7 @@ class ApplicationController < ActionController::API
   def has_non_organization_subdomain?
     Settings.non_organization_subdomains.include?(request.subdomain)
   end
+
+
 
 end
