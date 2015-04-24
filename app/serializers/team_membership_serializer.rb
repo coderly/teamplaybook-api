@@ -1,4 +1,4 @@
-class OrganizationUserSerializer < ActiveModel::Serializer
+class TeamMembershipSerializer < ActiveModel::Serializer
   attributes :id, :email
 
   belongs_to :user

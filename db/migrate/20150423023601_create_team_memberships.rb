@@ -1,6 +1,6 @@
-class CreateOrganizationUsers < ActiveRecord::Migration
+class CreateTeamMemberships < ActiveRecord::Migration
   def change
-    create_table :organization_users do |t|
+    create_table :team_memberships do |t|
       t.string :email, null: false
       t.integer :organization_id, null: false
       t.integer :user_id

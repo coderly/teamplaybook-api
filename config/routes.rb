@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   resources :organizations, only: :create
   resource :organization
-  resources :organization_users, only: :create
+  resources :team_memberships, only: :create
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

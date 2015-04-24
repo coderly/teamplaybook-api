@@ -2,10 +2,10 @@ require 'rails_helper'
 
 describe "Sign up" do
 
-  describe "Sign up when having an organization_user" do
+  describe "Sign up when having an team_membership" do
     it "should add the new user to organization they were added to" do
       organization = create(:organization)
-      create(:organization_user, organization: organization, email: 'test@test.com')
+      create(:team_membership, organization: organization, email: 'test@test.com')
 
       post '/users', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
 
