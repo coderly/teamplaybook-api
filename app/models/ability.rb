@@ -1,8 +1,8 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user, organization)
-    if organization.owner ==  user
+  def initialize(user, team)
+    if team.owner ==  user
       can :manage, TeamMembership
     end
   end

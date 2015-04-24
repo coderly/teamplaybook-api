@@ -7,8 +7,8 @@ Rails.application.routes.draw do
 
   get '/me', to: 'me#show'
 
-  resources :organizations, only: :create
-  resource :organization
+  resources :teams, only: :create
+  resource :team
   resources :team_memberships, only: :create
 
   # The priority is based upon order of creation: first created -> highest priority.

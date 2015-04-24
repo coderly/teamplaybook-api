@@ -5,43 +5,43 @@ describe "team_memberships service" do
   describe "POST /team_membership" do
     it "should create a team membership for an unregistered user" do
       owner = create(:user)
-      organization = create(:organization, owner: owner)
+      team = create(:team, owner: owner)
 
-      host! "#{organization.subdomain}.example.com"
+      host! "#{team.subdomain}.example.com"
 
       post '/team_memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.email).to eq 'test@example.com'
-      expect(json.data.links.organization.linkage.type).to eq "organizations"
-      expect(json.data.links.organization.linkage.id).to eq organization.id.to_s
+      expect(json.data.links.team.linkage.type).to eq "teams"
+      expect(json.data.links.team.linkage.id).to eq team.id.to_s
       expect(json.data.links.user.linkage).to be_nil
     end
 
-    it "should create a team membership for a registered user and asociate the user with the organization" do
+    it "should create a team membership for a registered user and asociate the user with the team" do
       owner = create(:user)
-      organization = create(:organization, owner: owner)
+      team = create(:team, owner: owner)
       user = create(:user, email: 'test@example.com')
 
-      host! "#{organization.subdomain}.example.com"
+      host! "#{team.subdomain}.example.com"
 
       post '/team_memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.email).to eq 'test@example.com'
-      expect(json.data.links.organization.linkage.type).to eq "organizations"
-      expect(json.data.links.organization.linkage.id).to eq organization.id.to_s
+      expect(json.data.links.team.linkage.type).to eq "teams"
+      expect(json.data.links.team.linkage.id).to eq team.id.to_s
       expect(json.data.links.user.linkage.type).to eq "users"
       expect(json.data.links.user.linkage.id).to eq user.id.to_s
     end
 
-    it "should not create a team membership if the user is not the organization's owner" do
+    it "should not create a team membership if the user is not the team's owner" do
       user = create(:user)
-      organization = create(:organization)
+      team = create(:team)
 
-      host! "#{organization.subdomain}.example.com"
+      host! "#{team.subdomain}.example.com"
 
       post '/team_memberships', {data:
         {email: 'test@example.com'}

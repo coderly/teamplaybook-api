@@ -6,7 +6,7 @@ class TeamMembershipsController < ApplicationController
 
   def create
     authorize! :create, TeamMembership
-    team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(team_membership_params, @organization)
+    team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(team_membership_params, @team)
     if team_membership.persisted?
       render json: team_membership, status: 200
     else

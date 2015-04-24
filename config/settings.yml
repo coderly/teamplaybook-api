@@ -1,5 +1,5 @@
 defaults: &defaults
-  non_organization_subdomains:
+  non_team_subdomains:
     - www
     - blog
     - podcast

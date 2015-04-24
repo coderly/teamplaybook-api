@@ -15,30 +15,30 @@ describe "Ping API" do
     Timecop.return
   end
 
-  it "returns the organization name" do
-    create(:organization, name: "Test Organization", subdomain: "testorganization")
-    host! "testorganization.example.com"
+  it "returns the team name" do
+    create(:team, name: "Test Team", subdomain: "testteam")
+    host! "testteam.example.com"
 
     get "/ping"
 
     expect(response).to be_success
     expect(json.ping).to eq "pong"
-    expect(json.organization_name).to eq "Test Organization"
+    expect(json.team_name).to eq "Test Team"
   end
 
-  it "wont load any organization if the subdomain is on the list of non organization subdomains" do
+  it "wont load any team if the subdomain is on the list of non team subdomains" do
     host! "www.example.com"
 
     get "/ping"
 
     expect(response).to be_success
     expect(json.ping).to eq "pong"
-    expect(json.organization_name).to be_nil
+    expect(json.team_name).to be_nil
   end
 
-  it "will return 404 if the organization does not exist" do
-    create(:organization, name: "Test Organization", subdomain: "testorganization")
-    host! "nonexistingorganization.example.com"
+  it "will return 404 if the team does not exist" do
+    create(:team, name: "Test Team", subdomain: "testteam")
+    host! "nonexistingteam.example.com"
 
     get "/ping"
 

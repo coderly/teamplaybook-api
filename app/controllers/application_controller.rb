@@ -4,22 +4,22 @@ class ApplicationController < ActionController::API
   rescue_from CanCan::AccessDenied, with: :not_authorized
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found
   
-  before_filter :fetch_organization
+  before_filter :fetch_team
 
   protected
 
-  def fetch_organization
-    @organization = Organization.find_by_subdomain!(request.subdomain) if has_organization_subdomain?
+  def fetch_team
+    @team = Team.find_by_subdomain!(request.subdomain) if has_team_subdomain?
   end
 
   def current_ability
-    @current_ability ||= Ability.new(current_user, @organization)
+    @current_ability ||= Ability.new(current_user, @team)
   end
 
   private
 
-  def has_organization_subdomain?
-    has_subdomain? && !has_non_organization_subdomain?
+  def has_team_subdomain?
+    has_subdomain? && !has_non_team_subdomain?
   end
 
   def not_found
@@ -34,7 +34,7 @@ class ApplicationController < ActionController::API
     request.subdomain.present?
   end
 
-  def has_non_organization_subdomain?
-    Settings.non_organization_subdomains.include?(request.subdomain)
+  def has_non_team_subdomain?
+    Settings.non_team_subdomains.include?(request.subdomain)
   end
 end
