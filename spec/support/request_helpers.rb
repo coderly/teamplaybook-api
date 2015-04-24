@@ -8,14 +8,14 @@ module Requests
   end
 
   module MimeHelpers
-    def post(path, params={}, headers={})
-      headers.merge!("ContentType" => "application/vnd.api+json")
-      super
+    def post_json_api(path, params={}, headers={})
+      headers.merge!("Content-Type" => "application/vnd.api+json")
+      post path, params.to_json, headers
     end
 
-    def put(path, params={}, headers={})
-      headers.merge!("ContentType" => "application/vnd.api+json")
-      super
+    def put_json_api(path, params={}, headers={})
+      headers.merge!("Content-Type" => "application/vnd.api+json")
+      post path, params.to_json, headers
     end
   end
 

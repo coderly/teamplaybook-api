@@ -6,7 +6,7 @@ describe "Organizations service" do
     it "should create an organization for a user" do
       user = create(:user)
 
-      post '/organizations', {data:
+      post_json_api '/organizations', {data:
         { name: "test organization", subdomain: "testorganization"}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 
@@ -19,7 +19,7 @@ describe "Organizations service" do
     it "should save the organization and return the organization when using its subdomain" do
       user = create(:user)
 
-      post '/organizations', {data:
+      post_json_api '/organizations', {data:
         { name: "test organization", subdomain: "testorganization"}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 
