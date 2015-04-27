@@ -1,0 +1,9 @@
+<% unless @user.present? %>
+  <h1> Wellcome to Team Playbook </h1>
+<% else %>
+  <h1> Hello <%= @user.name %> </h1>
+<% end %>
+
+<p>You have been added to <%= @team.name %> on Team Playbook. </pp>
+
+<p> To check your team activity go to <a href="<%= @url%>">@url</a></p>

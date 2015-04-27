@@ -17,6 +17,7 @@ gem 'hashie'
 gem 'settingslogic'
 gem 'devise'
 gem 'simple_token_authentication', '~> 1.0'
+gem 'cancan'
 
 group :development, :test do
   gem 'pry-rails'
