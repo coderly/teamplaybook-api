@@ -9,7 +9,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post '/team_memberships', {data:
+      post_json_api '/team_memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
@@ -26,7 +26,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post '/team_memberships', {data:
+      post_json_api '/team_memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
@@ -43,7 +43,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post '/team_memberships', {data:
+      post_json_api '/team_memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 

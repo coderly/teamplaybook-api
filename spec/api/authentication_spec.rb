@@ -25,21 +25,21 @@ describe "Authentication" do
 
   describe "register" do
     it "should create user" do
-      post '/users', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
+      post_json_api '/users', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
 
       expect(json.data.authentication_token).not_to be_nil
       expect(json.data.email).to eq 'test@test.com'
     end
 
     it "should authenticate with resulting token" do
-      post '/users', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
+      post_json_api '/users', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
       get '/me', {}, {"X-User-Email" => json.data.email, "X-User-Token" => json.data.authentication_token}
 
       expect(json.data.email).to eq 'test@test.com'
     end
 
     it "should return an errors in the correct format" do
-       post '/users', data: { email: 'test@test.com', password: 'pas', password_confirmation: 'pas' }
+       post_json_api '/users', data: { email: 'test@test.com', password: 'pas', password_confirmation: 'pas' }
        expect(json.error).to eq "Password is too short (minimum is 8 characters)"
     end
   end

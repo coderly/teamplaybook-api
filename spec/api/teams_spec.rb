@@ -6,7 +6,7 @@ describe "Teams service" do
     it "should create an team for a user" do
       user = create(:user)
 
-      post '/teams', {data:
+      post_json_api '/teams', {data:
         { name: "test team", subdomain: "testteam"}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 
@@ -19,7 +19,7 @@ describe "Teams service" do
     it "should save the team and return the team when using its subdomain" do
       user = create(:user)
 
-      post '/teams', {data:
+      post_json_api '/teams', {data:
         { name: "test team", subdomain: "testteam"}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 
