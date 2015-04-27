@@ -19,7 +19,7 @@ class ApplicationController < ActionController::API
   private
 
   def has_team_subdomain?
-    has_subdomain? && !has_non_team_subdomain?
+    has_subdomain? && !has_reserved_subdomain?
   end
 
   def not_found
@@ -34,7 +34,7 @@ class ApplicationController < ActionController::API
     request.subdomain.present?
   end
 
-  def has_non_team_subdomain?
-    Settings.non_team_subdomains.include?(request.subdomain)
+  def has_reserved_subdomain?
+    Settings.reserved_subdomains.include?(request.subdomain)
   end
 end

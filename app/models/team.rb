@@ -1,5 +1,5 @@
 class Team < ActiveRecord::Base
-  validates :subdomain, presence: true, exclusion: { in: Settings.non_team_subdomains,
+  validates :subdomain, presence: true, exclusion: { in: Settings.reserved_subdomains,
     message: "%{value} is not a valid subdomain." }
   validates :name, presence: true
 

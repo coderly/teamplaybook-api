@@ -2,7 +2,7 @@ module TeamPlaybook
   module Scenario
     class CreateTeamMembership
 
-      def call(team_membership_params, team)
+      def call(team, team_membership_params)
         team_membership = create_team_membership(team_membership_params, team)
         return team_membership unless team_membership.persisted?
 
