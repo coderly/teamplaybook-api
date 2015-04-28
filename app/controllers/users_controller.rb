@@ -1,6 +1,7 @@
 require 'team_playbook/scenario/add_user_to_invited_teams'
 
 class UsersController < Devise::RegistrationsController
+
   def create
     user = User.new(user_params)
     if user.save

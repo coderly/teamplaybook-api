@@ -1,4 +1,4 @@
-Rails.application.routes.draw do 
+Rails.application.routes.draw do
   devise_for :users, only: [:sessions, :registrations],
    controllers: { sessions: "tokens", registrations: "users" },
    path_names: {
@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   resources :teams, only: :create
   resource :team
   resources :team_memberships, only: :create
+
+  resources :users, to: 'team_members'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
