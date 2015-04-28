@@ -27,9 +27,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
   gem 'timecop'
-  gem 'webmock'
-  gem 'vcr'
   gem 'dotenv-rails'
+  gem 'stripe-ruby-mock', :require => 'stripe_mock'
 end
 
 # To use ActiveModel has_secure_password
