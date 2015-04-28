@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
   def index
     if has_team_subdomain?
-      authorize! :manage, TeamMembership
+      authorize! :read, TeamMembership
       render json: @team.members, status: 200
     else
       forbidden
