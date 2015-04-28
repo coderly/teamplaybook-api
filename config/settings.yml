@@ -18,6 +18,8 @@ defaults: &defaults
         trial_period_days: 0
         interval: "month"
 
+    default_plan: "free_plan"
+
 development:
   <<: *defaults
 
