@@ -1,19 +1,12 @@
 class Plan < ActiveRecord::Base
 
-  after_create :create_stripe_plan
+  after_create :assign_stripe_plan
   after_update :update_stripe_plan
 
   private
 
-  def create_stripe_plan
-    stripe_plan = Stripe::Plan.create(
-      amount: amount,
-      interval: interval,
-      name: name,
-      currency: 'usd',
-      trial_period_days: trial_period_days,
-      id: slug
-    )
+  def assign_stripe_plan
+    stripe_plan = create_stripe_plan
     update_column :stripe_id, stripe_plan.id
   end
 
@@ -37,6 +30,17 @@ class Plan < ActiveRecord::Base
   def fetch_stripe_plan
     return null unless stripe_id.present?
     Stripe::Plan.retrieve(stripe_id)
+  end
+
+  def create_stripe_plan
+    Stripe::Plan.create(
+      amount: amount,
+      interval: interval,
+      name: name,
+      currency: 'usd',
+      trial_period_days: trial_period_days,
+      id: slug
+    )
   end
 
 end

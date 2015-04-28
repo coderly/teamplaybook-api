@@ -57,10 +57,10 @@ RSpec.configure do |config|
   config.include Requests::AuthorizationHelpers, type: :request
 
   config.after(:each) do | example |
-    StripeMock.start
+    StripeMock.stop
   end
 
   config.before(:each) do | example |
-    StripeMock.stop
+    StripeMock.start
   end
 end
