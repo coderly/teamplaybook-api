@@ -8,7 +8,7 @@ class TeamMembershipsController < ApplicationController
     authorize! :create, TeamMembership
     team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(@team, team_membership_params)
     if team_membership.persisted?
-      render json: team_membership, status: 20
+      render json: team_membership, status: 200
     else
       render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
     end
