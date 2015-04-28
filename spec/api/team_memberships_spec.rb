@@ -16,6 +16,18 @@ describe "team_memberships service" do
       expect(json.data.length).to eq 15
     end
 
+    it "should return a 401 Not Authorized if requested without proper tokens" do
+      user = create(:user)
+      team = create(:team, subdomain: "test")
+
+      host! "test.example.com"
+
+      get "/team_memberships", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      expect(response.code).to eq "401"
+      expect(json.error).to eq "Not Authorized"
+    end
+
     it "should return a 403 Forbidden if requested from a non-team subdomain" do
       owner = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
