@@ -17,14 +17,12 @@ class Plan < ActiveRecord::Base
     stripe_plan.interval = interval
     stripe_plan.name = name
     stripe_plan.trial_period_days = trial_period_days
-    stripe_plan.id = slug
 
     stripe_plan.save
-    update_column :stripe_id, stripe_plan.id
   end
 
   def plan_data_changed?
-    amount_changed? || interval_changed? || name_changed? || trial_period_days_changed? || slug_changed?
+    amount_changed? || interval_changed? || name_changed? || trial_period_days_changed?
   end
 
   def fetch_stripe_plan
