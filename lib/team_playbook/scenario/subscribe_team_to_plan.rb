@@ -2,16 +2,11 @@ module TeamPlaybook
   module Scenario
     class SubscribeTeamToPlan
       def call(team, plan_slug)
-        plan = fetch_plan(plan_slug)
-        subscribe_team_to_plan(team, plan)
-      end
-
-      private
-
-      def subscribe_team_to_plan(team, plan_slug)
         create_plan_subscription_for_team(team, plan_slug)
         create_stripe_subscription_for_team(team)
       end
+
+      private
 
       def create_plan_subscription_for_team(team, plan_slug)
         team.plan = fetch_plan(plan_slug)
@@ -20,6 +15,7 @@ module TeamPlaybook
 
       def create_stripe_subscription_for_team(team)
         plan = team.plan
+        binding.pry
         subscription = stripe_customer_for_team(team).subscriptions.create(:plan => plan.stripe_id)
         team.subscription.update_attribute :stripe_id, subscription.id
       end
@@ -27,6 +23,12 @@ module TeamPlaybook
       def stripe_customer_for_team(team)
         return create_stripe_customer_for_team(team) unless team.has_stripe_customer?
         team.stripe_customer
+      end
+
+      def create_stripe_customer_for_team(team)
+        customer = Stripe::Customer.create(description: "Customer for #{team.name}")
+        team.update_attribute :stripe_id, customer.id
+        customer
       end
 
       def fetch_plan(plan_slug)
