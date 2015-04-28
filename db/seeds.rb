@@ -1,4 +1,5 @@
-require 'team_playbook/scneario/create_or_update_plan'
+require 'team_playbook/scenario/create_or_update_plan'
 Settings.billing.plans.each do |plan_info|
-  TeamPlaybook::Scenario::CreateOrUpdatePlan.new.call(plan_info)
+  plan = TeamPlaybook::Scenario::CreateOrUpdatePlan.new.call(plan_info)
+  puts "#{plan.name} is created"
 end

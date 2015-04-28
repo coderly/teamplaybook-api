@@ -9,6 +9,7 @@ module TeamPlaybook
         plan.trial_period_days = plan_info.trial_period_days
 
         plan.save!
+        plan
       end
     end
   end
