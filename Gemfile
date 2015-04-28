@@ -29,6 +29,7 @@ group :development, :test do
   gem 'timecop'
   gem 'webmock'
   gem 'vcr'
+  gem 'dotenv-rails'
 end
 
 # To use ActiveModel has_secure_password
