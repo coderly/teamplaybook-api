@@ -18,6 +18,7 @@ gem 'settingslogic'
 gem 'devise'
 gem 'simple_token_authentication', '~> 1.0'
 gem 'cancan'
+gem 'stripe'
 
 group :development, :test do
   gem 'pry-rails'
@@ -26,6 +27,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
   gem 'timecop'
+  gem 'webmock'
+  gem 'vcr'
 end
 
 # To use ActiveModel has_secure_password
