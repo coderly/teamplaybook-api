@@ -4,6 +4,7 @@ require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'stripe_mock'
+require 'database_cleaner'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -55,12 +56,15 @@ RSpec.configure do |config|
   config.include Requests::JsonHelpers, type: :request
   config.include Requests::MimeHelpers, type: :request
   config.include Requests::AuthorizationHelpers, type: :request
-
-  config.after(:each) do | example |
-    StripeMock.stop
-  end
+  DatabaseCleaner.strategy = :truncation
 
   config.before(:each) do | example |
     StripeMock.start
+  end
+
+  config.after(:each) do | example |
+    DatabaseCleaner.clean
+
+    StripeMock.stop
   end
 end

@@ -29,6 +29,7 @@ group :development, :test do
   gem 'timecop'
   gem 'dotenv-rails'
   gem 'stripe-ruby-mock', :require => 'stripe_mock'
+  gem 'database_cleaner'
 end
 
 # To use ActiveModel has_secure_password
