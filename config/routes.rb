@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resource :team
   resources :team_memberships, only: :create
 
-  resources :users, to: 'team_members'
+  resources :users, controller: :team_members
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -5,7 +5,7 @@ FactoryGirl.define do
   end
 
   trait :with_users do
-    ignore do
+    transient do
       number_of_users 1
     end
 
