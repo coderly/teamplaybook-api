@@ -15,7 +15,6 @@ module TeamPlaybook
 
       def create_stripe_subscription_for_team(team)
         plan = team.plan
-        binding.pry
         subscription = stripe_customer_for_team(team).subscriptions.create(:plan => plan.stripe_id)
         team.subscription.update_attribute :stripe_id, subscription.id
       end
