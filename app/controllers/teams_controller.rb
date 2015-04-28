@@ -1,10 +1,11 @@
+require 'team_playbook/scenario/create_team'
+
 class TeamsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
 
   def create
-    team = Team.new(team_params)
-    team.owner = current_user
-    if team.save
+    team = TeamPlaybook::Scenario::CreateTeam.new.call(team_params: team_params, owner: current_user)
+    if team.persisted?
       render json: team, status: 200
     else
       render json: {error: team.errors.full_messages.to_sentence}, status: :unprocessable_entity
