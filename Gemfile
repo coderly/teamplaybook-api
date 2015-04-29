@@ -18,7 +18,7 @@ gem 'settingslogic'
 gem 'devise'
 gem 'simple_token_authentication', '~> 1.0'
 gem 'cancan'
-gem 'stripe'
+gem 'stripe', '1.20.1'
 
 group :development, :test do
   gem 'pry-rails'
@@ -28,7 +28,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'timecop'
   gem 'dotenv-rails'
-  gem 'stripe-ruby-mock', :require => 'stripe_mock'
+  gem 'stripe-ruby-mock', '~> 2.1.1', :require => 'stripe_mock'
   gem 'database_cleaner'
 end
 
