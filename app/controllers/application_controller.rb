@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
 
   rescue_from CanCan::AccessDenied, with: :not_authorized
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found
-  
+
   before_filter :fetch_team
 
   protected
@@ -28,6 +28,10 @@ class ApplicationController < ActionController::API
 
   def not_authorized
     render json: {error: "Not Authorized"}, status: :unauthorized
+  end
+
+  def forbidden
+    render json: {error: "Forbidden"}, status: :forbidden
   end
 
   def has_subdomain?
