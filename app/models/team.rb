@@ -9,12 +9,4 @@ class Team < ActiveRecord::Base
   has_one :plan, :through => :subscription
 
   delegate :name, to: :plan, prefix: true
-
-  def has_stripe_customer?
-    stripe_id.present?
-  end
-
-  def stripe_user
-    Stripe::Customer.retrieve(stripe_id)
-  end
 end

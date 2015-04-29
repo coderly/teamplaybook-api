@@ -50,18 +50,5 @@ describe "Teams service" do
       expect(json.data.plan_name).to eq "Free Plan"
     end
 
-    it "should receive a plan slug and create a subscription for the team to that plan" do
-      user = create(:user)
-
-      post_json_api '/teams', {data:
-        { name: "test team", subdomain: "testteam", plan: 'pro_plan'}
-       }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
-
-      host! "testteam.example.com"
-
-      get "/team", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
-      expect(json.data.plan_name).to eq "Pro Plan"
-    end
-
   end
 end

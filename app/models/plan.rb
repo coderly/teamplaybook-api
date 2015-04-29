@@ -3,6 +3,18 @@ class Plan < ActiveRecord::Base
   after_create :assign_stripe_plan
   after_update :update_stripe_plan
 
+  def self.default_plan
+    find_by_slug(Settings.billing.default_plan)
+  end
+
+  def self.find_by_slug(slug)
+    find_by slug: slug
+  end
+
+  def self.find_or_initialize_by_slug(slug)
+    Plan.where(slug: plan_info.slug).first_or_initialize
+  end
+
   private
 
   def assign_stripe_plan
@@ -40,5 +52,4 @@ class Plan < ActiveRecord::Base
       id: slug
     )
   end
-
 end
