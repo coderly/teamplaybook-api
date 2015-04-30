@@ -4,7 +4,7 @@ describe "Teams service" do
   describe "POST to create" do
 
     before do
-      create(:plan, slug: "free_plan", name: "Free Plan")
+      create(:plan, slug: "free_plan", name: "Free Plan", amount: 0)
       create(:plan, slug: "pro_plan", name: "Pro Plan")
     end
 
@@ -50,5 +50,29 @@ describe "Teams service" do
       expect(json.data.plan_name).to eq "Free Plan"
     end
 
+  end
+
+  describe "Post to change_plan" do
+    before do
+      create(:plan, slug: "free_plan", name: "Free Plan", amount: 0)
+      create(:plan, slug: "pro_plan", name: "Pro Plan")
+    end
+
+    it "Should change a team's plan" do
+      user = create(:user)
+      card_token = valid_stripe_card_token
+
+      post_json_api '/teams', {data:
+        { name: "test team", subdomain: "testteam"}
+       }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      host! "testteam.example.com"
+
+      post_json_api '/team/change_plan', {plan_slug: 'pro_plan', card_token: card_token},
+       {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      get "/team", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+      expect(json.data.plan_name).to eq "Pro Plan"
+    end
   end
 end

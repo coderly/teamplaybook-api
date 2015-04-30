@@ -53,6 +53,7 @@ RSpec.configure do |config|
   # Mix in FactoryGirl methods
   config.include FactoryGirl::Syntax::Methods
 
+  config.include TeamPlaybookSpecHelpers
   config.include Requests::JsonHelpers, type: :request
   config.include Requests::MimeHelpers, type: :request
   config.include Requests::AuthorizationHelpers, type: :request
