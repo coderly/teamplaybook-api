@@ -2,7 +2,7 @@ module TeamPlaybook
   module Scenario
     class AddCardToTeam
       def call(team, card_token)
-        create_card_for_stripe_customer(stripe_customer_for_team(team), card_token)
+        create_card_for_stripe_customer(find_or_create_stripe_customer_for_team(team), card_token)
       end
 
       private
@@ -13,9 +13,10 @@ module TeamPlaybook
 
       # Yes, this is a duplication with ChangePlanForTeam methods
       # all of these will eventually have to go to a class.
-      def stripe_customer_for_team(team)
-        return create_stripe_customer_for_team(team) unless team_has_stripe_customer?(team)
-        retrieve_stripe_customer_for_team(team)
+
+      def find_or_create_stripe_customer_for_team(team)
+        return find_stripe_customer_for_team(team) if team_has_stripe_customer?(team)
+        create_stripe_customer_for_team(team)
       end
 
       def create_stripe_customer_for_team(team)
@@ -28,10 +29,10 @@ module TeamPlaybook
         team.stripe_customer_id.present?
       end
 
-      def retrieve_stripe_customer_for_team(team)
+      def find_stripe_customer_for_team(team)
         Stripe::Customer.retrieve(team.stripe_customer_id)
       end
-
+      
     end
   end
 end
