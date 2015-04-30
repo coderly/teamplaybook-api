@@ -6,7 +6,7 @@ describe "Sign up" do
       team = create(:team)
       create(:team_membership, team: team, email: 'test@test.com')
 
-      post_json_api '/users', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
+      post_json_api '/accounts', data: { email: 'test@test.com', password: 'password', password_confirmation: 'password' }
 
       user_id = json.data.id
 

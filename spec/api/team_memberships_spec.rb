@@ -2,6 +2,47 @@ require 'rails_helper'
 
 describe "team_memberships service" do
 
+  describe "GET /team_memberships" do
+    it "should return team memberships for current team if requested from team subdomain" do
+      owner = create(:user)
+      team = create(:team, subdomain: "test", owner: owner)
+      create_list(:team_membership, 10, team: team)
+      create_list(:team_membership, 5, :with_user, team: team)
+
+      host! "test.example.com"
+
+      get "/team_memberships", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.data.length).to eq 15
+    end
+
+    it "should return a 401 Not Authorized if requested without proper tokens" do
+      user = create(:user)
+      team = create(:team, subdomain: "test")
+
+      host! "test.example.com"
+
+      get "/team_memberships", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      expect(response.code).to eq "401"
+      expect(json.error).to eq "Not Authorized"
+    end
+
+    it "should return a 403 Forbidden if requested from a non-team subdomain" do
+      owner = create(:user)
+      team = create(:team, subdomain: "test", owner: owner)
+      create_list(:team_membership, 10, team: team)
+
+      host! "www.example.com"
+
+      get "/team_memberships", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.error).to eq "Forbidden"
+      expect(response.code).to eq "403"
+    end
+
+  end
+
   describe "POST /team_membership" do
     it "should create a team membership for an unregistered user" do
       owner = create(:user)
