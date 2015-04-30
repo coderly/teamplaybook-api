@@ -18,6 +18,7 @@ gem 'settingslogic'
 gem 'devise'
 gem 'simple_token_authentication', '~> 1.0'
 gem 'cancan'
+gem 'stripe', '1.20.1'
 
 group :development, :test do
   gem 'pry-rails'
@@ -26,6 +27,9 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
   gem 'timecop'
+  gem 'dotenv-rails'
+  gem 'stripe-ruby-mock', '~> 2.1.1', :require => 'stripe_mock'
+  gem 'database_cleaner'
 end
 
 # To use ActiveModel has_secure_password

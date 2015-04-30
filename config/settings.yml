@@ -3,6 +3,22 @@ defaults: &defaults
     - www
     - blog
     - podcast
+  billing:
+    plans:
+      -
+        slug: "pro_plan"
+        name: "Pro Plan"
+        amount: 20
+        trial_period_days: 30
+        interval: "month"
+      -
+        slug: "free_plan"
+        name: "Free Plan"
+        amount: 0
+        trial_period_days: 0
+        interval: "month"
+
+    default_plan: "free_plan"
 
 development:
   <<: *defaults

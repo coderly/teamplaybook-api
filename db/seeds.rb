@@ -1,7 +1,5 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+require 'team_playbook/scenario/create_or_update_plan'
+Settings.billing.plans.each do |plan_info|
+  plan = TeamPlaybook::Scenario::CreateOrUpdatePlan.new.call(plan_info)
+  puts "#{plan.name} is created"
+end
