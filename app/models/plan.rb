@@ -3,6 +3,10 @@ class Plan < ActiveRecord::Base
   after_create :assign_stripe_plan
   after_update :update_stripe_plan
 
+  def is_paid?
+    amount > 0
+  end
+
   def self.default_plan
     find_by_slug(Settings.billing.default_plan)
   end

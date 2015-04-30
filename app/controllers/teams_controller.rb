@@ -1,5 +1,6 @@
 require 'team_playbook/scenario/create_team'
-require 'team_playbook/scenario/create_team'
+require 'team_playbook/scenario/change_plan_for_team'
+require 'team_playbook/scenario/add_card_to_team'
 require 'errors/credit_card_required_error'
 
 class TeamsController < ApplicationController
@@ -22,6 +23,7 @@ class TeamsController < ApplicationController
 
   def change_plan
     plan = Plan.find_by_slug! params[:plan_slug]
+    TeamPlaybook::Scenario::AddCardToTeam.new.call(@team, params[:card_token]) if params[:card_token].present?
     TeamPlaybook::Scenario::ChangePlanForTeam.new.call(@team, plan)
     render json: plan, status: 200
   end
@@ -33,6 +35,6 @@ class TeamsController < ApplicationController
   end
 
   def credit_card_required
-    render json: {error: "A credit card is require for this action."}, status: :unprocessable_entity
+    render json: {error: "A credit card is required for a paid plan."}, status: :unprocessable_entity
   end
 end

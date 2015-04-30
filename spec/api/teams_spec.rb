@@ -74,5 +74,23 @@ describe "Teams service" do
       get "/team", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
       expect(json.data.plan_name).to eq "Pro Plan"
     end
+
+    it "should require a card token if the plan is a paid plan" do
+      plan = create(:plan, slug: "Expensive Plan", amount: 3000)
+      user = create(:user)
+      card_token = valid_stripe_card_token
+
+      post_json_api '/teams', {data:
+        { name: "test team", subdomain: "testteam"}
+       }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      host! "testteam.example.com"
+
+      post_json_api '/team/change_plan', {plan_slug: plan.slug},
+       {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      expect(response.code).to eq "422"
+      expect(json.error).to eq "A credit card is required for a paid plan."
+    end
   end
 end
