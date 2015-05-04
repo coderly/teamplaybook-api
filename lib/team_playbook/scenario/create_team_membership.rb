@@ -25,7 +25,12 @@ module TeamPlaybook
 
       def connect_user_to_team(team_membership)
         user = User.find_by_email(team_membership.email)
-        team_membership.update_attributes(user_id: user.id, roles: [:member]) if user.present?
+
+        user_is_owner = user.present? && team_membership.team.owner == user
+        user_is_member = user.present? && team_membership.team.owner != user
+
+        team_membership.update_attributes(user_id: user.id, roles: [:owner]) if user_is_owner
+        team_membership.update_attributes(user_id: user.id, roles: [:member]) if user_is_member
       end
 
       def send_team_membership_email(team_membership)

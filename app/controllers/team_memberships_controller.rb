@@ -1,4 +1,3 @@
-require 'team_playbook/scenario/create_team_membership'
 require 'cancan'
 
 class TeamMembershipsController < ApplicationController
@@ -17,8 +16,8 @@ class TeamMembershipsController < ApplicationController
   def promote
     if has_team_subdomain?
       authorize! :promote, TeamMembership
-      team_membership = TeamPlaybook::Scenario::PromoteTeamMembership.new.call(@team, team_membership_role_params)
-      if team_membership.persisted?
+      team_membership = TeamPlaybook::Scenario::PromoteTeamMembership.new.call(team_membership_params)
+      if team_membership.valid?
         render json: team_membership, status: 200
       else
         render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
@@ -31,8 +30,8 @@ class TeamMembershipsController < ApplicationController
   def demote
     if has_team_subdomain?
       authorize! :demote, TeamMembership
-      team_membership = TeamPlaybook::Scenario::DemoteTeamMembership.new.call(@team, team_membership_role_params)
-      if team_membership.persisted?
+      team_membership = TeamPlaybook::Scenario::DemoteTeamMembership.new.call(team_membership_params)
+      if team_membership.valid?
         render json: team_membership, status: 200
       else
         render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
@@ -54,10 +53,6 @@ class TeamMembershipsController < ApplicationController
   private
 
   def team_membership_params
-    params.require(:data).permit(:email)
-  end
-
-  def team_membership_role_params
-    params.require(:data).permit(:team_membership_id)
+    params.require(:data).permit(:email, :id)
   end
 end
