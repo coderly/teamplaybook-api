@@ -7,9 +7,9 @@ module TeamPlaybook
         return team_membership unless team_membership.persisted?
 
         connect_and_notify_user(team_membership)
+        assign_role_to_membership(team_membership)
         team_membership
       end
-
 
       private
 
@@ -30,6 +30,11 @@ module TeamPlaybook
 
       def send_team_membership_email(team_membership)
         TeamMembershipMailer.team_membership_email(team_membership).deliver_now
+      end
+
+      def assign_role_to_membership(team_membership)
+        team_membership.roles = [:invitee] if team_membership.user.blank?
+        team_membership.roles = [:member] if team_membership.user.present?
       end
 
     end
