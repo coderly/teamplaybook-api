@@ -10,7 +10,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:member])
 
-        team_membership = PromoteTeamMembership.new.call({id: team_membership.id})
+        team_membership = PromoteTeamMembership.new.call(team_membership)
 
         expect(team_membership.has_role? :admin).to be true
         expect(team_membership.valid?).to be true
@@ -22,7 +22,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:admin])
 
-        team_membership = PromoteTeamMembership.new.call({id: team_membership.id})
+        team_membership = PromoteTeamMembership.new.call(team_membership)
 
         expect(team_membership.has_role? :admin).to be true
         expect(team_membership.valid?).to be true
@@ -33,7 +33,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, team: team, email: "test@example.com", roles: [:invitee])
 
-        team_membership = PromoteTeamMembership.new.call({id: team_membership.id})
+        team_membership = PromoteTeamMembership.new.call(team_membership)
 
         expect(team_membership.valid?).to be false
       end
@@ -44,7 +44,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, user: owner, team: team, email: owner.email, roles: [:owner])
 
-        team_membership = PromoteTeamMembership.new.call({id: team_membership.id})
+        team_membership = PromoteTeamMembership.new.call(team_membership)
 
         expect(team_membership.valid?).to be false
       end

@@ -102,10 +102,7 @@ describe "team_memberships service" do
 
       host! "www.example.com"
 
-      post_json_api "/team_membership/promote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
+      post_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error).to eq "Forbidden"
       expect(response.code).to eq "403"
@@ -122,9 +119,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/promote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
 
       expect(json.error).to eq "Not Authorized"
       expect(response.code).to eq "401"
@@ -140,9 +135,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/promote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
@@ -158,9 +151,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/promote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["admin"]
       expect(response.code).to eq "200"
@@ -176,9 +167,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/promote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["admin"]
       expect(response.code).to eq "200"
@@ -192,9 +181,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/promote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
@@ -210,10 +197,7 @@ describe "team_memberships service" do
 
       host! "www.example.com"
 
-      post_json_api "/team_membership/demote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
+      post_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error).to eq "Forbidden"
       expect(response.code).to eq "403"
@@ -230,9 +214,8 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/demote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
+
 
       expect(json.error).to eq "Not Authorized"
       expect(response.code).to eq "401"
@@ -248,9 +231,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/demote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
@@ -266,9 +247,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/demote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["member"]
       expect(response.code).to eq "200"
@@ -284,9 +263,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/demote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["member"]
       expect(response.code).to eq "200"
@@ -300,9 +277,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api "/team_membership/demote", {
-        data: { id: team_membership.id }
-      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      post_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"

@@ -15,9 +15,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :team_memberships, only: [:index, :create]
-
-  resource :team_membership do
+  resources :team_memberships, only: [:index, :create] do
     member do
       post :promote
       post :demote
