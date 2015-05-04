@@ -7,7 +7,6 @@ module TeamPlaybook
         return team_membership unless team_membership.persisted?
 
         connect_and_notify_user(team_membership)
-        assign_role_to_membership(team_membership)
         team_membership
       end
 
@@ -15,6 +14,7 @@ module TeamPlaybook
 
       def create_team_membership(team_membership_params, team)
         team_membership_params[:team_id] = team.id
+        team_membership_params[:roles] = [:invitee]
         return TeamMembership.create(team_membership_params)
       end
 
@@ -25,18 +25,12 @@ module TeamPlaybook
 
       def connect_user_to_team(team_membership)
         user = User.find_by_email(team_membership.email)
-        team_membership.update_attribute :user_id, user.id if user.present?
+        team_membership.update_attributes(user_id: user.id, roles: [:member]) if user.present?
       end
 
       def send_team_membership_email(team_membership)
         TeamMembershipMailer.team_membership_email(team_membership).deliver_now
       end
-
-      def assign_role_to_membership(team_membership)
-        team_membership.roles = [:invitee] if team_membership.user.blank?
-        team_membership.roles = [:member] if team_membership.user.present?
-      end
-
     end
   end
 end

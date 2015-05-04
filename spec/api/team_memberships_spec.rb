@@ -93,4 +93,84 @@ describe "team_memberships service" do
     end
   end
 
+  describe "POST /team_membership/promote" do
+    it 'should return an error when accessed from non-team subdomain' do
+      owner = create(:user)
+      team_membership_user = create(:user)
+      team = create(:team, owner: owner)
+      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email)
+
+      host! "www.example.com"
+
+      post_json_api '/team_membership/promote', {
+          team_membership_id: team_membership.id
+        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+
+      expect(json.error).to eq "Forbidden"
+      expect(response.code).to eq "403"
+    end
+
+    it 'should return a "401 Not Authorized" if the current user is not the team owner' do
+      owner = create(:user)
+      some_other_user = create(:user)
+      team_membership_user = create(:user)
+
+      team = create(:team, owner: owner)
+
+      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email)
+
+      host! "#{team.subdomain}.example.com"
+
+      post_json_api '/team_membership/promote', {
+          team_membership_id: team_membership.id
+        }, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
+
+      expect(json.error).to eq "Not Authorized"
+      expect(response.code).to eq "401"
+    end
+
+    it 'should return an error for team membership with "invitee" role' do
+      fail
+    end
+
+    it 'should promote team membership with "member" role to "admin"' do
+      fail
+    end
+
+    it 'should do nothing with member who is already "admin"' do
+      fail
+    end
+
+    it 'should return an error for team membership with "owner" role' do
+      fail
+    end
+  end
+
+  describe "POST /team_membership/demote" do
+    it 'should return an error when accessed from regular subdomain' do
+      fail
+    end
+
+    it 'should not work if the current user is not the team owner' do
+      fail
+    end
+
+    it 'should return an error for team membership with "invitee" role' do
+      fail
+    end
+
+    it 'should do nothing for team membership with "member" role' do
+      fail
+    end
+
+    it 'should demote team membership with "admin" role to "member"' do
+      fail
+    end
+
+    it 'should return an error for team membership with "owner" role' do
+      fail
+    end
+  end
+
 end

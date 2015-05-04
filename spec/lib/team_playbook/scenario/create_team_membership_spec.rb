@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'team_playbook/scenario/create_team_membership'
 
 module TeamPlaybook

@@ -14,6 +14,34 @@ class TeamMembershipsController < ApplicationController
     end
   end
 
+  def promote
+    if has_team_subdomain?
+      authorize! :promote, TeamMembership
+      team_membership = TeamPlaybook::Scenario::PromoteTeamMembership.new.call(@team, team_membership_role_params)
+      if team_membership.persisted?
+        render json: team_membership, status: 200
+      else
+        render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      end
+    else
+      forbidden
+    end
+  end
+
+  def demote
+    if has_team_subdomain?
+      authorize! :demote, TeamMembership
+      team_membership = TeamPlaybook::Scenario::DemoteTeamMembership.new.call(@team, team_membership_role_params)
+      if team_membership.persisted?
+        render json: team_membership, status: 200
+      else
+        render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      end
+    else
+      forbidden
+    end
+  end
+
   def index
     if has_team_subdomain?
       authorize! :read, TeamMembership
@@ -27,5 +55,9 @@ class TeamMembershipsController < ApplicationController
 
   def team_membership_params
     params.require(:data).permit(:email)
+  end
+
+  def team_membership_role_params
+    params.require(:data).permit(:team_membership_id)
   end
 end

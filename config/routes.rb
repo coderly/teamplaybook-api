@@ -14,11 +14,18 @@ Rails.application.routes.draw do
       post :change_plan
     end
   end
-  
+
   resources :team_memberships, only: [:index, :create]
 
+  resource :team_membership do
+    member do
+      post :promote
+      post :demote
+    end
+  end
+
   resources :users, only: :index
-  
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
