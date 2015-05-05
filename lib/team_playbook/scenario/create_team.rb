@@ -10,7 +10,7 @@ module TeamPlaybook
 
         team.save
 
-        create_owner_team_membership(team) if team.persisted?
+        create_membership_for_team_owner(team) if team.persisted?
         subscribe_team_to_default_plan(team) if team.persisted?
 
         team
@@ -18,7 +18,7 @@ module TeamPlaybook
 
       private
 
-      def create_owner_team_membership(team)
+      def create_membership_for_team_owner(team)
         CreateTeamMembership.new.call(team, { email: team.owner.email })
       end
 
