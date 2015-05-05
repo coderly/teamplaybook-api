@@ -17,6 +17,11 @@ module Requests
       headers.merge!("Content-Type" => "application/vnd.api+json")
       post path, params.to_json, headers
     end
+
+    def patch_json_api(path, params={}, headers={})
+      headers.merge!("Content-Type" => "application/vnd.api+json")
+      patch path, params.to_json, headers
+    end
   end
 
   module AuthorizationHelpers
