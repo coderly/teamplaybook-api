@@ -17,8 +17,8 @@ Rails.application.routes.draw do
 
   resources :team_memberships, only: [:index, :create] do
     member do
-      post :promote
-      post :demote
+      patch :promote
+      patch :demote
     end
   end
 
