@@ -93,7 +93,7 @@ describe "team_memberships service" do
     end
   end
 
-  describe "PATCH /team_memberships/:id/promote" do
+  describe "PATCH /team_memberships/:id" do
     it "should return a '403 Forbidden' when accessed from non-team subdomain" do
       owner = create(:user)
       team_membership_user = create(:user)
@@ -102,7 +102,7 @@ describe "team_memberships service" do
 
       host! "www.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error).to eq "Forbidden"
       expect(response.code).to eq "403"
@@ -119,7 +119,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
 
       expect(json.error).to eq "Not Authorized"
       expect(response.code).to eq "401"
@@ -135,13 +135,27 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
     end
 
-    it "should promote team membership with 'member' role to 'admin'" do
+    it "should return a 422 error for team membership with 'owner' role" do
+      owner = create(:user)
+      team = create(:team, owner: owner)
+
+      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+
+      host! "#{team.subdomain}.example.com"
+
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.error.present?).to be true
+      expect(response.code).to eq "422"
+    end
+
+    it "should allow changing of membership with 'member' role to 'admin'" do
       owner = create(:user)
       team_membership_user = create(:user)
 
@@ -151,13 +165,14 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["admin"]
       expect(response.code).to eq "200"
     end
 
-    it "should do nothing for team membership with 'admin' role" do
+
+    it "should allow changing of membership with 'admin' role to 'member'" do
       owner = create(:user)
       team_membership_user = create(:user)
 
@@ -167,120 +182,10 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
-      expect(json.data.roles).to eq ["admin"]
-      expect(response.code).to eq "200"
-    end
-
-    it "should return an error for team membership with 'owner' role" do
-      owner = create(:user)
-      team = create(:team, owner: owner)
-
-      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
-
-      host! "#{team.subdomain}.example.com"
-
-      patch_json_api "/team_memberships/#{team_membership.id}/promote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
-      expect(json.error.present?).to be true
-      expect(response.code).to eq "422"
-    end
-  end
-
-  describe "PATCH /team_memberships/:id/demote" do
-    it "should return a '403 Forbidden' when accessed from non-team subdomain" do
-      owner = create(:user)
-      team_membership_user = create(:user)
-      team = create(:team, owner: owner)
-      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email, roles: [:admin])
-
-      host! "www.example.com"
-
-      patch_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
-      expect(json.error).to eq "Forbidden"
-      expect(response.code).to eq "403"
-    end
-
-    it "should return a '401 Not Authorized' if the current user is not the team owner" do
-      owner = create(:user)
-      some_other_user = create(:user)
-      team_membership_user = create(:user)
-
-      team = create(:team, owner: owner)
-
-      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email, roles: [:admin])
-
-      host! "#{team.subdomain}.example.com"
-
-      patch_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token}
-
-
-      expect(json.error).to eq "Not Authorized"
-      expect(response.code).to eq "401"
-    end
-
-    it "should return a 422 error for team membership with 'invitee' role" do
-      owner = create(:user)
-      some_other_user = create(:user)
-
-      team = create(:team, owner: owner)
-
-      team_membership = create(:team_membership, team: team, email: "unregistered_user@example.com")
-
-      host! "#{team.subdomain}.example.com"
-
-      patch_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
-      expect(json.error.present?).to be true
-      expect(response.code).to eq "422"
-    end
-
-    it "should do nothing for team membership with 'member' role" do
-      owner = create(:user)
-      team_membership_user = create(:user)
-
-      team = create(:team, owner: owner)
-
-      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email, roles: [:member])
-
-      host! "#{team.subdomain}.example.com"
-
-      patch_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:member]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["member"]
       expect(response.code).to eq "200"
-    end
-
-    it "should demote team membership with 'admin' role to 'member'" do
-      owner = create(:user)
-      team_membership_user = create(:user)
-
-      team = create(:team, owner: owner)
-
-      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email, roles: [:admin])
-
-      host! "#{team.subdomain}.example.com"
-
-      patch_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
-      expect(json.data.roles).to eq ["member"]
-      expect(response.code).to eq "200"
-    end
-
-    it "should return an error for team membership with 'owner' role" do
-      owner = create(:user)
-      team = create(:team, owner: owner)
-
-      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
-
-      host! "#{team.subdomain}.example.com"
-
-      patch_json_api "/team_memberships/#{team_membership.id}/demote", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-
-      expect(json.error.present?).to be true
-      expect(response.code).to eq "422"
     end
   end
 

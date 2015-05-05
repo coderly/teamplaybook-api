@@ -1,7 +1,6 @@
 require 'cancan'
 require 'team_playbook/scenario/create_team_membership'
-require 'team_playbook/scenario/promote_team_membership'
-require 'team_playbook/scenario/demote_team_membership'
+require 'team_playbook/scenario/update_team_membership'
 
 class TeamMembershipsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
@@ -16,24 +15,10 @@ class TeamMembershipsController < ApplicationController
     end
   end
 
-  def promote
+  def update
     if has_team_subdomain?
       authorize! :promote, TeamMembership
-      team_membership = TeamPlaybook::Scenario::PromoteTeamMembership.new.call(current_team_membership)
-      if team_membership.valid?
-        render json: team_membership, status: 200
-      else
-        render json: {error: team_membership.errors[:role].to_sentence}, status: :unprocessable_entity
-      end
-    else
-      forbidden
-    end
-  end
-
-  def demote
-    if has_team_subdomain?
-      authorize! :demote, TeamMembership
-      team_membership = TeamPlaybook::Scenario::DemoteTeamMembership.new.call(current_team_membership)
+      team_membership = TeamPlaybook::Scenario::UpdateTeamMembership.new.call(team_membership: current_team_membership, params: team_membership_params)
       if team_membership.valid?
         render json: team_membership, status: 200
       else
@@ -56,7 +41,7 @@ class TeamMembershipsController < ApplicationController
   private
 
   def team_membership_params
-    params.require(:data).permit(:email)
+    params.require(:data).permit(:email, roles: [])
   end
 
   def current_team_membership
