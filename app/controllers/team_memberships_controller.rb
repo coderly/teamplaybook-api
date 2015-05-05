@@ -23,7 +23,7 @@ class TeamMembershipsController < ApplicationController
       if team_membership.valid?
         render json: team_membership, status: 200
       else
-        render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
+        render json: {error: team_membership.errors[:role].to_sentence}, status: :unprocessable_entity
       end
     else
       forbidden
@@ -37,7 +37,7 @@ class TeamMembershipsController < ApplicationController
       if team_membership.valid?
         render json: team_membership, status: 200
       else
-        render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
+        render json: {error: team_membership.errors[:role].to_sentence}, status: :unprocessable_entity
       end
     else
       forbidden
