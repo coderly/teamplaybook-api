@@ -1,4 +1,7 @@
 require 'cancan'
+require 'team_playbook/scenario/create_team_membership'
+require 'team_playbook/scenario/promote_team_membership'
+require 'team_playbook/scenario/demote_team_membership'
 
 class TeamMembershipsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
