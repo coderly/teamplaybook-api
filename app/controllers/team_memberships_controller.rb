@@ -35,7 +35,7 @@ class TeamMembershipsController < ApplicationController
       authorize! :delete, TeamMembership
       success = TeamPlaybook::Scenario::DeleteTeamMembership.new.call(team_membership: current_team_membership)
       if success
-        render json: {}, status: 204
+        render nothing: true, status: 204
       else
         render json: {error: "Cannot delete team owner."}, status: 405
       end
