@@ -1,5 +1,6 @@
-require 'team_playbook/scenario/create_team_membership'
 require 'cancan'
+require 'team_playbook/scenario/create_team_membership'
+require 'team_playbook/scenario/update_team_membership'
 
 class TeamMembershipsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
@@ -11,6 +12,20 @@ class TeamMembershipsController < ApplicationController
       render json: team_membership, status: 200
     else
       render json: {error: team_membership.errors.full_messages.to_sentence}, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if has_team_subdomain?
+      authorize! :promote, TeamMembership
+      team_membership = TeamPlaybook::Scenario::UpdateTeamMembership.new.call(team_membership: current_team_membership, params: team_membership_params)
+      if team_membership.valid?
+        render json: team_membership, status: 200
+      else
+        render json: {error: team_membership.errors[:role].to_sentence}, status: :unprocessable_entity
+      end
+    else
+      forbidden
     end
   end
 
@@ -26,6 +41,10 @@ class TeamMembershipsController < ApplicationController
   private
 
   def team_membership_params
-    params.require(:data).permit(:email)
+    params.require(:data).permit(:email, roles: [])
+  end
+
+  def current_team_membership
+    TeamMembership.find(params[:id])
   end
 end
