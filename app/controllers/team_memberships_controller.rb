@@ -17,7 +17,7 @@ class TeamMembershipsController < ApplicationController
 
   def update
     if has_team_subdomain?
-      authorize! :promote, TeamMembership
+      authorize! :update, TeamMembership
       team_membership = TeamPlaybook::Scenario::UpdateTeamMembership.new.call(team_membership: current_team_membership, params: team_membership_params)
       if team_membership.valid?
         render json: team_membership, status: 200
