@@ -263,4 +263,127 @@ describe "team_memberships service" do
     end
   end
 
+  describe "DELETE /team_memberships/:id" do
+    it "should return a '403 Forbidden' when accessed from non-team subdomain" do
+      owner = create(:user)
+      team_member = create(:user)
+      team = create(:team, owner: owner)
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email)
+
+      host! "www.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.error).to eq "Forbidden"
+      expect(response.code).to eq "403"
+    end
+
+    it "should require authorization" do
+      owner = create(:user)
+      team_member = create(:user)
+
+      team = create(:team, owner: owner)
+
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email)
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}"
+
+      expect(json.error).to eq "Not Authorized"
+      expect(response.code).to eq "401"
+    end
+
+    it "should not authorize for a request from a user who is not a member of the team" do
+      owner = create(:user)
+      some_other_user = create(:user)
+      team_member = create(:user)
+
+      team = create(:team, owner: owner)
+
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {
+        "X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token
+      }
+
+      expect(json.error).to eq "Not Authorized"
+      expect(response.code).to eq "401"
+    end
+
+    it "should not authorize for a request from a regular member" do
+      owner = create(:user)
+      team_member = create(:user)
+      some_other_team_member = create(:user)
+
+      team = create(:team, owner: owner)
+
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, roles: [:member])
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {
+        "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
+      }
+
+      expect(json.error).to eq "Not Authorized"
+      expect(response.code).to eq "401"
+    end
+
+    it "should not authorize for a request from an admin" do
+      owner = create(:user)
+      team_member = create(:user)
+      some_other_team_member = create(:user)
+
+      team = create(:team, owner: owner)
+
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, roles: [:admin])
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {
+        "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
+      }
+
+      expect(json.error).to eq "Not Authorized"
+      expect(response.code).to eq "401"
+    end
+
+    it "should authorize for a request from the team owner" do
+      owner = create(:user)
+      team_member = create(:user)
+
+      team = create(:team, owner: owner)
+
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {
+        "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
+      }
+
+      expect(response.code).to eq "204"
+    end
+
+    it "should not allow deletion of owner role" do
+      owner = create(:user)
+      team = create(:team, owner: owner)
+      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {
+        "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
+      }
+
+      expect(json.error.present?).to be true
+      expect(response.code).to eq "405"
+    end
+  end
+
 end
