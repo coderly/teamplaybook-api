@@ -13,7 +13,11 @@ class ApplicationController < ActionController::API
   end
 
   def current_ability
-    @current_ability ||= Ability.new(current_user, @team)
+    @current_ability ||= Ability.new(current_user, current_team)
+  end
+
+  def current_team
+    @team ||= nil
   end
 
   private

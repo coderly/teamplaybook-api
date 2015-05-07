@@ -9,7 +9,7 @@ class TeamMembershipsController < ApplicationController
 
   def create
     authorize! :create, TeamMembership
-    team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(@team, team_membership_params)
+    team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(current_team, team_membership_params)
     if team_membership.persisted?
       render json: team_membership, status: 200
     else
@@ -48,7 +48,7 @@ class TeamMembershipsController < ApplicationController
   def index
     if has_team_subdomain?
       authorize! :read, TeamMembership
-      render json: @team.team_memberships, status: 200
+      render json: current_team.team_memberships, status: 200
     else
       forbidden
     end
