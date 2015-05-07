@@ -6,6 +6,7 @@ describe "team_memberships service" do
     it "should return team memberships for current team if requested from team subdomain" do
       owner = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
+      create(:team_membership, team: team, user: owner, roles: [:owner])
       create_list(:team_membership, 10, team: team)
       create_list(:team_membership, 5, :with_user, team: team)
 
@@ -13,7 +14,7 @@ describe "team_memberships service" do
 
       get "/team_memberships", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
-      expect(json.data.length).to eq 15
+      expect(json.data.length).to eq 16
     end
 
     it "should return a 401 Not Authorized if requested without proper tokens" do
@@ -47,6 +48,7 @@ describe "team_memberships service" do
     it "should create a team membership for an unregistered user" do
       owner = create(:user)
       team = create(:team, owner: owner)
+      create(:team_membership, team: team, user: owner, roles: [:owner])
 
       host! "#{team.subdomain}.example.com"
 
@@ -64,6 +66,7 @@ describe "team_memberships service" do
       owner = create(:user)
       team = create(:team, owner: owner)
       user = create(:user, email: 'test@example.com')
+      create(:team_membership, user: owner, team: team, roles: [:owner])
 
       host! "#{team.subdomain}.example.com"
 
@@ -167,7 +170,6 @@ describe "team_memberships service" do
       owner = create(:user)
       team_member = create(:user)
       some_other_team_member = create(:user)
-
       team = create(:team, owner: owner)
 
       team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
@@ -185,8 +187,8 @@ describe "team_memberships service" do
     it "should authorize for a request from the team owner" do
       owner = create(:user)
       team_member = create(:user)
-
       team = create(:team, owner: owner)
+      create(:team_membership, team: team, user: owner, roles: [:owner])
 
       team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
 
@@ -201,10 +203,10 @@ describe "team_memberships service" do
 
     it "should return a 422 error when updating membership with 'invitee' role" do
       owner = create(:user)
-      team_member = create(:user)
-
       team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, roles: [:owner])
 
+      team_member = create(:user)
       team_membership = create(:team_membership, team: team, email: "unregistered_user@example.com")
 
       host! "#{team.subdomain}.example.com"
@@ -231,10 +233,10 @@ describe "team_memberships service" do
 
     it "should allow changing of membership with 'member' role to 'admin'" do
       owner = create(:user)
-      team_membership_user = create(:user)
-
       team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, roles: [:owner])
 
+      team_membership_user = create(:user)
       team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email)
 
       host! "#{team.subdomain}.example.com"
@@ -248,10 +250,10 @@ describe "team_memberships service" do
 
     it "should allow changing of membership with 'admin' role to 'member'" do
       owner = create(:user)
-      team_membership_user = create(:user)
-
       team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, roles: [:owner])
 
+      team_membership_user = create(:user)
       team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email, roles: [:admin])
 
       host! "#{team.subdomain}.example.com"
@@ -355,10 +357,10 @@ describe "team_memberships service" do
 
     it "should authorize for a request from the team owner" do
       owner = create(:user)
-      team_member = create(:user)
-
       team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, roles: [:owner])
 
+      team_member = create(:user)
       team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
 
       host! "#{team.subdomain}.example.com"
