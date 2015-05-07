@@ -1,4 +1,4 @@
-require 'errors/cannot_destroy_team_owner_membership_error'
+require 'errors/cannot_remove_owner_from_team_error'
 
 class TeamMembership < ActiveRecord::Base
   belongs_to :team
@@ -24,9 +24,6 @@ class TeamMembership < ActiveRecord::Base
   end
 
   def prevent_owner_membership_deletion
-    if has_role? :owner
-      errors[:base] << 'is the team owner'
-      raise CannotDestroyTeamOwnerMembership
-    end
+    raise CannotRemoveOwnerFromTeam if has_role? :owner
   end
 end

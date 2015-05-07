@@ -1,6 +1,6 @@
 require 'rails_helper'
 require 'team_playbook/scenario/update_team_membership'
-require 'errors/cannot_destroy_team_owner_membership_error'
+require 'errors/cannot_remove_owner_from_team_error'
 
 module TeamPlaybook
   module Scenario
@@ -11,7 +11,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:owner])
 
-        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.to raise_error CannotDestroyTeamOwnerMembership
+        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.to raise_error CannotRemoveOwnerFromTeam
       end
 
       it "should delete an 'invitee'" do

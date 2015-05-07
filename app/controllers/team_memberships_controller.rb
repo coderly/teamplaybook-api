@@ -2,7 +2,7 @@ require 'cancan'
 require 'team_playbook/scenario/create_team_membership'
 require 'team_playbook/scenario/update_team_membership'
 require 'team_playbook/scenario/delete_team_membership'
-require 'errors/cannot_destroy_team_owner_membership_error'
+require 'errors/cannot_remove_owner_from_team_error'
 
 class TeamMembershipsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
@@ -33,12 +33,13 @@ class TeamMembershipsController < ApplicationController
 
   def destroy
     if has_team_subdomain?
+      authorize! :delete, TeamMembership
+      team_membership = current_team_membership
       begin
-        authorize! :delete, TeamMembership
         TeamPlaybook::Scenario::DeleteTeamMembership.new.call(team_membership: current_team_membership)
         render nothing: true, status: 204
-      rescue CannotDestroyTeamOwnerMembership
-        render json: {error: "Cannot delete team owner."}, status: 405
+      rescue CannotRemoveOwnerFromTeam
+        render json: {error: "Cannot remove team owner from team."}, status: 405
       end
     else
       forbidden
