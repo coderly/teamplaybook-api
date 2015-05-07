@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'team_playbook/scenario/update_team_membership'
+require 'errors/cannot_destroy_team_owner_membership_error'
 
 module TeamPlaybook
   module Scenario
@@ -10,9 +11,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:owner])
 
-        success = DeleteTeamMembership.new.call(team_membership: team_membership)
-
-        expect(success).to eq false
+        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.to raise_error CannotDestroyTeamOwnerMembership
       end
 
       it "should delete an 'invitee'" do
@@ -20,9 +19,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, team: team, email: "invite@example.com", roles: [:invitee])
 
-        success = DeleteTeamMembership.new.call(team_membership: team_membership)
-
-        expect(success).to eq true
+        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
       end
 
       it "should delete a 'member'" do
@@ -31,9 +28,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:member])
 
-        success = DeleteTeamMembership.new.call(team_membership: team_membership)
-
-        expect(success).to eq true
+        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
       end
 
       it "should delete an 'admin'" do
@@ -42,9 +37,7 @@ module TeamPlaybook
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:admin])
 
-        success = DeleteTeamMembership.new.call(team_membership: team_membership)
-
-        expect(success).to eq true
+        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
       end
     end
   end

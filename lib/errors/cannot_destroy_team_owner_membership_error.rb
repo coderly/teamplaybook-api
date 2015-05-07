@@ -1,0 +1,2 @@
+class CannotDestroyTeamOwnerMembership < StandardError
+end
