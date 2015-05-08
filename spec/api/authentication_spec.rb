@@ -31,7 +31,6 @@ describe "Authentication" do
       host! "#{team.subdomain}.example.com"
 
       post '/accounts/tokens', user: { email: 'test@test.com', password: 'password' }
-      puts json.data
       expect(json.data.role).to eq "owner"
     end
   end
