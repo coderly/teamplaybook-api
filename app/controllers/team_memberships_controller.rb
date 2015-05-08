@@ -54,6 +54,15 @@ class TeamMembershipsController < ApplicationController
     end
   end
 
+  def show
+    if has_team_subdomain?
+      authorize! :read, TeamMembership
+      render json: current_team_membership, status: 200
+    else
+      forbidden
+    end
+  end
+
   private
 
   def team_membership_params
