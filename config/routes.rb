@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get '/me', to: 'me#show'
 
   resources :teams, only: :create
-
+  resources :plans, only: :index
   resource :team do
     member do
       post :change_plan
