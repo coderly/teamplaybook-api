@@ -315,7 +315,7 @@ describe "team_memberships service" do
       expect(response.code).to eq "401"
     end
 
-    it "should not authorize for a request from a regular member" do
+    it "should not authorize for a request from a regular member if it's for deleting someone else's membership" do
       owner = create(:user)
       team_member = create(:user)
       some_other_team_member = create(:user)
@@ -335,7 +335,7 @@ describe "team_memberships service" do
       expect(response.code).to eq "401"
     end
 
-    it "should not authorize for a request from an admin" do
+    it "should not authorize for a request from an admin if it's for deleting someone else's membership" do
       owner = create(:user)
       team_member = create(:user)
       some_other_team_member = create(:user)
@@ -385,6 +385,42 @@ describe "team_memberships service" do
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "405"
+    end
+
+    it "should allow a member to remove themselves from the team" do
+      owner = create(:user)
+      team = create(:team, owner: owner)
+      create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+
+
+      team_member = create(:user)
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {
+        "X-User-Email" => team_member.email, "X-User-Token" => team_member.authentication_token
+      }
+
+      expect(response.code).to eq "204"
+    end
+
+    it "should allow an admin to remove themselves from the team" do
+      owner = create(:user)
+      team = create(:team, owner: owner)
+      create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+
+
+      team_member = create(:user)
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:admin])
+
+      host! "#{team.subdomain}.example.com"
+
+      delete "/team_memberships/#{team_membership.id}", {}, {
+        "X-User-Email" => team_member.email, "X-User-Token" => team_member.authentication_token
+      }
+
+      expect(response.code).to eq "204"
     end
   end
 
