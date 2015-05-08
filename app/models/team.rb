@@ -11,4 +11,6 @@ class Team < ActiveRecord::Base
   has_one :plan, :through => :subscription
 
   delegate :name, to: :plan, prefix: true
+  delegate :slug, to: :plan, prefix: true
+
 end
