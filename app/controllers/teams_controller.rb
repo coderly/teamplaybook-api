@@ -21,6 +21,16 @@ class TeamsController < ApplicationController
     render json: current_team, status: 200
   end
 
+  def destroy
+    if has_team_subdomain?
+      authorize! :destroy, current_team
+      TeamPlaybook::Scenario::DeleteTeam.new.call(team: current_team)
+      render nothing: true, status: 204
+    else
+      forbidden
+    end
+  end
+
   def change_plan
     plan = Plan.find_by_slug! params[:plan_slug]
     TeamPlaybook::Scenario::AddCardToTeam.new.call(current_team, params[:card_token]) if params[:card_token].present?
