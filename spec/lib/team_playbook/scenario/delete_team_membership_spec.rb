@@ -1,10 +1,10 @@
 require 'rails_helper'
-require 'team_playbook/scenario/update_team_membership'
+require 'team_playbook/scenario/delete_team_membership'
 require 'errors/cannot_remove_owner_from_team_error'
 
 module TeamPlaybook
   module Scenario
-    describe UpdateTeamMembership do
+    describe DeleteTeamMembership do
       it "should not delete an 'owner'" do
         user = create(:user)
         team = create(:team, owner: user)
