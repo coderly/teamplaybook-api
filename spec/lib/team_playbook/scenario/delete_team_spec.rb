@@ -7,7 +7,8 @@ module TeamPlaybook
       it "should delete team" do
         team = create(:team)
 
-        expect{DeleteTeam.new.call(team: team)}.not_to raise_error
+        DeleteTeam.new.call(team: team)
+        expect(team).not_to be_persisted
         expect(Team.all.count).to be 0
       end
 
@@ -18,7 +19,7 @@ module TeamPlaybook
         create_list(:team_membership, 10, team: team)
         create_list(:team_membership, 5, team: other_team)
 
-        expect{DeleteTeam.new.call(team: team)}.not_to raise_error
+        DeleteTeam.new.call(team: team)
         expect(TeamMembership.all.count).to eq 5
       end
     end
