@@ -1,13 +1,15 @@
 require 'cancan'
 require 'team_playbook/scenario/create_team_membership'
 require 'team_playbook/scenario/update_team_membership'
+require 'team_playbook/scenario/delete_team_membership'
+require 'errors/cannot_remove_owner_from_team_error'
 
 class TeamMembershipsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
 
   def create
     authorize! :create, TeamMembership
-    team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(@team, team_membership_params)
+    team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(current_team, team_membership_params)
     if team_membership.persisted?
       render json: team_membership, status: 200
     else
@@ -17,7 +19,7 @@ class TeamMembershipsController < ApplicationController
 
   def update
     if has_team_subdomain?
-      authorize! :promote, TeamMembership
+      authorize! :update, current_team_membership
       team_membership = TeamPlaybook::Scenario::UpdateTeamMembership.new.call(team_membership: current_team_membership, params: team_membership_params)
       if team_membership.valid?
         render json: team_membership, status: 200
@@ -29,10 +31,24 @@ class TeamMembershipsController < ApplicationController
     end
   end
 
+  def destroy
+    if has_team_subdomain?
+      authorize! :delete, current_team_membership
+      begin
+        TeamPlaybook::Scenario::DeleteTeamMembership.new.call(team_membership: current_team_membership)
+        render nothing: true, status: 204
+      rescue CannotRemoveOwnerFromTeam
+        render json: {error: "Cannot remove team owner from team."}, status: 405
+      end
+    else
+      forbidden
+    end
+  end
+
   def index
     if has_team_subdomain?
       authorize! :read, TeamMembership
-      render json: @team.team_memberships, status: 200
+      render json: current_team.team_memberships, status: 200
     else
       forbidden
     end
