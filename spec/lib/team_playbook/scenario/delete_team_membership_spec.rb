@@ -1,10 +1,10 @@
 require 'rails_helper'
-require 'team_playbook/scenario/update_team_membership'
+require 'team_playbook/scenario/delete_team_membership'
 require 'errors/cannot_remove_owner_from_team_error'
 
 module TeamPlaybook
   module Scenario
-    describe UpdateTeamMembership do
+    describe DeleteTeamMembership do
       it "should not delete an 'owner'" do
         user = create(:user)
         team = create(:team, owner: user)
@@ -18,8 +18,8 @@ module TeamPlaybook
         team = create(:team)
 
         team_membership = create(:team_membership, team: team, email: "invite@example.com", roles: [:invitee])
-
-        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
+        DeleteTeamMembership.new.call(team_membership: team_membership)
+        expect(team_membership).not_to be_persisted
       end
 
       it "should delete a 'member'" do
@@ -27,8 +27,8 @@ module TeamPlaybook
         team = create(:team)
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:member])
-
-        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
+        DeleteTeamMembership.new.call(team_membership: team_membership)
+        expect(team_membership).not_to be_persisted
       end
 
       it "should delete an 'admin'" do
@@ -36,8 +36,8 @@ module TeamPlaybook
         team = create(:team)
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:admin])
-
-        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
+        DeleteTeamMembership.new.call(team_membership: team_membership)
+        expect(team_membership).not_to be_persisted
       end
     end
   end
