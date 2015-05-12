@@ -9,7 +9,7 @@ class ApplicationController < ActionController::API
   protected
 
   def fetch_team
-    @team = Team.find_by_subdomain!(request.subdomain) if has_team_subdomain?
+    @current_team = Team.find_by_subdomain!(request.subdomain) if has_team_subdomain?
   end
 
   def current_ability
@@ -17,7 +17,7 @@ class ApplicationController < ActionController::API
   end
 
   def current_team
-    @team ||= nil
+    @current_team ||= nil
   end
 
   private
