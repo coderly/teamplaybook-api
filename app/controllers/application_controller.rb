@@ -21,7 +21,7 @@ class ApplicationController < ActionController::API
   end
 
   def current_team_membership
-    TeamMembership.find_by(user: current_user, team: current_team) if current_team.present?
+    TeamMembership.find_by!(user: current_user, team: current_team) if current_team.present?
   end
 
   private
