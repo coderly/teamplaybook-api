@@ -18,8 +18,8 @@ module TeamPlaybook
         team = create(:team)
 
         team_membership = create(:team_membership, team: team, email: "invite@example.com", roles: [:invitee])
-
-        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
+        DeleteTeamMembership.new.call(team_membership: team_membership)
+        expect(team_membership).not_to be_persisted
       end
 
       it "should delete a 'member'" do
@@ -27,8 +27,8 @@ module TeamPlaybook
         team = create(:team)
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:member])
-
-        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
+        DeleteTeamMembership.new.call(team_membership: team_membership)
+        expect(team_membership).not_to be_persisted
       end
 
       it "should delete an 'admin'" do
@@ -36,8 +36,8 @@ module TeamPlaybook
         team = create(:team)
 
         team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:admin])
-
-        expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.not_to raise_error
+        DeleteTeamMembership.new.call(team_membership: team_membership)
+        expect(team_membership).not_to be_persisted
       end
     end
   end
