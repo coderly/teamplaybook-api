@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe "team_memberships service" do
 
-  describe "GET /team_memberships" do
+  describe "GET /team-memberships" do
     it "should return team memberships for current team if requested from team subdomain" do
       owner = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
@@ -12,7 +12,7 @@ describe "team_memberships service" do
 
       host! "test.example.com"
 
-      get "/team_memberships", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      get "/team-memberships", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.length).to eq 16
     end
@@ -23,7 +23,7 @@ describe "team_memberships service" do
 
       host! "test.example.com"
 
-      get "/team_memberships", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+      get "/team-memberships", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 
       expect(response.code).to eq "401"
       expect(json.error).to eq "Not Authorized"
@@ -36,7 +36,7 @@ describe "team_memberships service" do
 
       host! "www.example.com"
 
-      get "/team_memberships", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      get "/team-memberships", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error).to eq "Forbidden"
       expect(response.code).to eq "403"
@@ -44,7 +44,7 @@ describe "team_memberships service" do
 
   end
 
-  describe "POST /team_memberships" do
+  describe "POST /team-memberships" do
     it "should create a team membership for an unregistered user" do
       owner = create(:user)
       team = create(:team, owner: owner)
@@ -52,7 +52,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api '/team_memberships', {data:
+      post_json_api '/team-memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
@@ -70,7 +70,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api '/team_memberships', {data:
+      post_json_api '/team-memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
@@ -87,7 +87,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      post_json_api '/team_memberships', {data:
+      post_json_api '/team-memberships', {data:
         {email: 'test@example.com'}
        }, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
 
@@ -96,7 +96,7 @@ describe "team_memberships service" do
     end
   end
 
-  describe "PATCH /team_memberships/:id" do
+  describe "PATCH /team-memberships/:id" do
     it "should return a '403 Forbidden' when accessed from non-team subdomain" do
       owner = create(:user)
       team_membership_user = create(:user)
@@ -105,7 +105,7 @@ describe "team_memberships service" do
 
       host! "www.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error).to eq "Forbidden"
       expect(response.code).to eq "403"
@@ -121,7 +121,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}
 
       expect(json.error).to eq "Not Authorized"
       expect(response.code).to eq "401"
@@ -138,7 +138,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
         "X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token
       }
 
@@ -158,7 +158,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
         "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
       }
 
@@ -177,7 +177,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
         "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
       }
 
@@ -194,7 +194,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
         "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
       }
 
@@ -211,7 +211,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
@@ -225,7 +225,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
@@ -241,7 +241,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["admin"]
       expect(response.code).to eq "200"
@@ -258,14 +258,14 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:member]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team-memberships/#{team_membership.id}", {data: {roles: [:member]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.data.roles).to eq ["member"]
       expect(response.code).to eq "200"
     end
   end
 
-  describe "DELETE /team_memberships/:id" do
+  describe "DELETE /team-memberships/:id" do
     it "should return a '403 Forbidden' when accessed from non-team subdomain" do
       owner = create(:user)
       team_member = create(:user)
@@ -274,7 +274,7 @@ describe "team_memberships service" do
 
       host! "www.example.com"
 
-      delete "/team_memberships/#{team_membership.id}", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      delete "/team-memberships/#{team_membership.id}", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error).to eq "Forbidden"
       expect(response.code).to eq "403"
@@ -290,7 +290,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      delete "/team_memberships/#{team_membership.id}"
+      delete "/team-memberships/#{team_membership.id}"
 
       expect(json.error).to eq "Not Authorized"
       expect(response.code).to eq "401"
@@ -307,7 +307,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      delete "/team_memberships/#{team_membership.id}", {}, {
+      delete "/team-memberships/#{team_membership.id}", {}, {
         "X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token
       }
 
@@ -327,7 +327,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      delete "/team_memberships/#{team_membership.id}", {}, {
+      delete "/team-memberships/#{team_membership.id}", {}, {
         "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
       }
 
@@ -347,7 +347,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      delete "/team_memberships/#{team_membership.id}", {}, {
+      delete "/team-memberships/#{team_membership.id}", {}, {
         "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
       }
 
@@ -365,7 +365,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      delete "/team_memberships/#{team_membership.id}", {}, {
+      delete "/team-memberships/#{team_membership.id}", {}, {
         "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
       }
 
@@ -379,7 +379,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      delete "/team_memberships/#{team_membership.id}", {}, {
+      delete "/team-memberships/#{team_membership.id}", {}, {
         "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
       }
 
