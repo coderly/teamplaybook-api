@@ -5,9 +5,9 @@ describe 'team members service' do
     it "should retrieve only team members if the request is from a team subdomain" do
       owner = create(:user)
       team_a = create(:team, :with_users, subdomain: "team-a", number_of_users: 10, owner: owner)
-      create(:team_membership, user: owner, team: team_a, roles: [:owner])
+      create(:team_membership, user: owner, team: team_a, role: :owner)
       team_b = create(:team, :with_users, subdomain: "team-b", number_of_users: 5, owner: owner)
-      create(:team_membership, user: owner, team: team_b, roles: [:owner])
+      create(:team_membership, user: owner, team: team_b, role: :owner)
 
 
       host! "team-a.example.com"
@@ -38,7 +38,7 @@ describe 'team members service' do
     it "should return a 403 Forbidden if requested from a non-team subdomain" do
       owner = create(:user)
       team = create(:team, :with_users, number_of_users: 10, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       host! "www.example.com"
 

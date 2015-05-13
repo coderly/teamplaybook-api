@@ -6,7 +6,7 @@ describe "team_memberships service" do
     it "should return team memberships for current team if requested from team subdomain" do
       owner = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
-      create(:team_membership, team: team, user: owner, roles: [:owner])
+      create(:team_membership, team: team, user: owner, role: :owner)
       create_list(:team_membership, 10, team: team)
       create_list(:team_membership, 5, :with_user, team: team)
 
@@ -48,7 +48,7 @@ describe "team_memberships service" do
     it "should create a team membership for an unregistered user" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, team: team, user: owner, roles: [:owner])
+      create(:team_membership, team: team, user: owner, role: :owner)
 
       host! "#{team.subdomain}.example.com"
 
@@ -66,7 +66,7 @@ describe "team_memberships service" do
       owner = create(:user)
       team = create(:team, owner: owner)
       user = create(:user, email: 'test@example.com')
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       host! "#{team.subdomain}.example.com"
 
@@ -105,7 +105,7 @@ describe "team_memberships service" do
 
       host! "www.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error).to eq "Forbidden"
       expect(response.code).to eq "403"
@@ -121,7 +121,7 @@ describe "team_memberships service" do
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}
 
       expect(json.error).to eq "Not Authorized"
       expect(response.code).to eq "401"
@@ -134,11 +134,11 @@ describe "team_memberships service" do
 
       team = create(:team, owner: owner)
 
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {
         "X-User-Email" => some_other_user.email, "X-User-Token" => some_other_user.authentication_token
       }
 
@@ -153,12 +153,12 @@ describe "team_memberships service" do
 
       team = create(:team, owner: owner)
 
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
-      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, roles: [:member])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
+      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {
         "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
       }
 
@@ -172,12 +172,12 @@ describe "team_memberships service" do
       some_other_team_member = create(:user)
       team = create(:team, owner: owner)
 
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
-      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, roles: [:admin])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
+      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, role: :admin)
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {
         "X-User-Email" => some_other_team_member.email, "X-User-Token" => some_other_team_member.authentication_token
       }
 
@@ -188,13 +188,13 @@ describe "team_memberships service" do
       owner = create(:user)
       team_member = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, team: team, user: owner, roles: [:owner])
+      create(:team_membership, team: team, user: owner, role: :owner)
 
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {
         "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
       }
 
@@ -204,14 +204,14 @@ describe "team_memberships service" do
     it "should return a 422 error when updating membership with 'invitee' role" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       team_member = create(:user)
       team_membership = create(:team_membership, team: team, email: "unregistered_user@example.com")
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
@@ -221,11 +221,11 @@ describe "team_memberships service" do
       owner = create(:user)
       team = create(:team, owner: owner)
 
-      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, role: :owner)
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
       expect(json.error.present?).to be true
       expect(response.code).to eq "422"
@@ -234,16 +234,16 @@ describe "team_memberships service" do
     it "should allow changing of membership with 'member' role to 'admin'" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       team_membership_user = create(:user)
       team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email)
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:admin]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :admin}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
-      expect(json.data.roles).to eq ["admin"]
+      expect(json.data.role).to eq "admin"
       expect(response.code).to eq "200"
     end
 
@@ -251,16 +251,16 @@ describe "team_memberships service" do
     it "should allow changing of membership with 'admin' role to 'member'" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       team_membership_user = create(:user)
-      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email, roles: [:admin])
+      team_membership = create(:team_membership, team: team, user: team_membership_user, email: team_membership_user.email, role: :admin)
 
       host! "#{team.subdomain}.example.com"
 
-      patch_json_api "/team_memberships/#{team_membership.id}", {data: {roles: [:member]}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      patch_json_api "/team_memberships/#{team_membership.id}", {data: {role: :member}}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
-      expect(json.data.roles).to eq ["member"]
+      expect(json.data.role).to eq "member"
       expect(response.code).to eq "200"
     end
   end
@@ -303,7 +303,7 @@ describe "team_memberships service" do
 
       team = create(:team, owner: owner)
 
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
@@ -322,8 +322,8 @@ describe "team_memberships service" do
 
       team = create(:team, owner: owner)
 
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
-      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, roles: [:member])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
+      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
@@ -342,8 +342,8 @@ describe "team_memberships service" do
 
       team = create(:team, owner: owner)
 
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
-      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, roles: [:admin])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
+      create(:team_membership, team: team, user: some_other_team_member, email: some_other_team_member.email, role: :admin)
 
       host! "#{team.subdomain}.example.com"
 
@@ -358,10 +358,10 @@ describe "team_memberships service" do
     it "should authorize for a request from the team owner" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       team_member = create(:user)
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
@@ -375,7 +375,7 @@ describe "team_memberships service" do
     it "should not allow deletion of owner role" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+      team_membership = create(:team_membership, team: team, user: owner, email: owner.email, role: :owner)
 
       host! "#{team.subdomain}.example.com"
 

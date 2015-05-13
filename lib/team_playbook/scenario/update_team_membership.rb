@@ -3,7 +3,7 @@ module TeamPlaybook
     class UpdateTeamMembership
 
       def call(team_membership:, params:)
-        team_membership.roles = params[:roles] if params.key? :roles
+        team_membership.role = params[:role] if params.key? :role
         team_membership.save
 
         team_membership

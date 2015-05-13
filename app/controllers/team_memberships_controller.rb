@@ -57,7 +57,7 @@ class TeamMembershipsController < ApplicationController
   private
 
   def team_membership_params
-    params.require(:data).permit(:email, roles: [])
+    params.require(:data).permit(:email, :role)
   end
 
   def current_team_membership
