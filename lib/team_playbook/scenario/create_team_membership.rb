@@ -14,7 +14,7 @@ module TeamPlaybook
 
       def create_team_membership(team_membership_params, team)
         team_membership_params[:team_id] = team.id
-        team_membership_params[:roles] = [:invitee]
+        team_membership_params[:role] = :invitee
         return TeamMembership.create(team_membership_params)
       end
 
@@ -29,8 +29,8 @@ module TeamPlaybook
         user_is_owner = user.present? && team_membership.team.owner == user
         user_is_member = user.present? && team_membership.team.owner != user
 
-        team_membership.update_attributes(user_id: user.id, roles: [:owner]) if user_is_owner
-        team_membership.update_attributes(user_id: user.id, roles: [:member]) if user_is_member
+        team_membership.update_attributes(user_id: user.id, role: :owner) if user_is_owner
+        team_membership.update_attributes(user_id: user.id, role: :member) if user_is_member
       end
 
       def send_team_membership_email(team_membership)

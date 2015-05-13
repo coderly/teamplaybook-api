@@ -26,4 +26,12 @@ class TeamMembership < ActiveRecord::Base
   def prevent_owner_membership_deletion
     raise CannotRemoveOwnerFromTeam if has_role? :owner
   end
+
+  def role=(role)
+    self.roles = [role]
+  end
+
+  def role
+    self.roles.first
+  end
 end
