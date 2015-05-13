@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   get '/me', to: 'me#show'
 
-  resources :teams, only: :create
+  resources :teams, only: [:create, :destroy]
 
   resource :team do
     member do
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :team_memberships, only: [:index, :create, :update, :destroy]
+  resources :team_memberships, only: [:index, :show, :create, :update, :destroy], path: '/team-memberships'
   resources :users, only: :index
 
 

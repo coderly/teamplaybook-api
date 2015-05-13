@@ -33,7 +33,7 @@ class TeamMembershipsController < ApplicationController
 
   def destroy
     if has_team_subdomain?
-      authorize! :delete, current_team_membership
+      authorize! :destroy, current_team_membership
       begin
         TeamPlaybook::Scenario::DeleteTeamMembership.new.call(team_membership: current_team_membership)
         render nothing: true, status: 204
@@ -49,6 +49,15 @@ class TeamMembershipsController < ApplicationController
     if has_team_subdomain?
       authorize! :read, TeamMembership
       render json: current_team.team_memberships, status: 200
+    else
+      forbidden
+    end
+  end
+
+  def show
+    if has_team_subdomain?
+      authorize! :read, TeamMembership
+      render json: current_team_membership, status: 200
     else
       forbidden
     end
