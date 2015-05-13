@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   get '/me', to: 'me#show'
 
-  resources :teams, only: :create
+  resources :teams, only: [:create, :destroy]
 
   resource :team do
     member do
