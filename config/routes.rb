@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :team_memberships, only: [:index, :create, :update, :destroy], path: '/team-memberships'
+  resources :team_memberships, only: [:index, :show, :create, :update, :destroy], path: '/team-memberships'
   resources :users, only: :index
 
 
