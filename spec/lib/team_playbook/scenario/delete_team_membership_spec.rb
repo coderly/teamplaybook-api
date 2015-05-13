@@ -9,7 +9,7 @@ module TeamPlaybook
         user = create(:user)
         team = create(:team, owner: user)
 
-        team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:owner])
+        team_membership = create(:team_membership, user: user, team: team, email: user.email, role: :owner)
 
         expect{DeleteTeamMembership.new.call(team_membership: team_membership)}.to raise_error CannotRemoveOwnerFromTeam
       end
@@ -17,7 +17,7 @@ module TeamPlaybook
       it "should delete an 'invitee'" do
         team = create(:team)
 
-        team_membership = create(:team_membership, team: team, email: "invite@example.com", roles: [:invitee])
+        team_membership = create(:team_membership, team: team, email: "invite@example.com", role: :invitee)
         DeleteTeamMembership.new.call(team_membership: team_membership)
         expect(team_membership).not_to be_persisted
       end
@@ -26,7 +26,7 @@ module TeamPlaybook
         user = create(:user)
         team = create(:team)
 
-        team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:member])
+        team_membership = create(:team_membership, user: user, team: team, email: user.email, role: :member)
         DeleteTeamMembership.new.call(team_membership: team_membership)
         expect(team_membership).not_to be_persisted
       end
@@ -35,7 +35,7 @@ module TeamPlaybook
         user = create(:user)
         team = create(:team)
 
-        team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:admin])
+        team_membership = create(:team_membership, user: user, team: team, email: user.email, role: :admin)
         DeleteTeamMembership.new.call(team_membership: team_membership)
         expect(team_membership).not_to be_persisted
       end

@@ -8,9 +8,9 @@ module TeamPlaybook
         user = create(:user)
         team = create(:team)
 
-        team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:admin])
+        team_membership = create(:team_membership, user: user, team: team, email: user.email, role: :admin)
 
-        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {roles: [:member]})
+        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {role: :member})
 
         expect(team_membership.has_role? :member).to be true
         expect(team_membership.valid?).to be true
@@ -20,9 +20,9 @@ module TeamPlaybook
         user = create(:user)
         team = create(:team)
 
-        team_membership = create(:team_membership, user: user, team: team, email: user.email, roles: [:member])
+        team_membership = create(:team_membership, user: user, team: team, email: user.email, role: :member)
 
-        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {roles: [:admin]})
+        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {role: :admin})
 
         expect(team_membership.has_role? :admin).to be true
         expect(team_membership.valid?).to be true
@@ -31,9 +31,9 @@ module TeamPlaybook
       it "should should return an invalid record if team membership role is 'invitee', there is no user and an attempt is made to change it" do
         team = create(:team)
 
-        team_membership = create(:team_membership, team: team, email: "test@example.com", roles: [:invitee])
+        team_membership = create(:team_membership, team: team, email: "test@example.com", role: :invitee)
 
-        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {roles: [:member]})
+        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {role: :member})
 
         expect(team_membership.valid?).to be false
       end
@@ -42,9 +42,9 @@ module TeamPlaybook
         owner = create(:user)
         team = create(:team, owner: owner)
 
-        team_membership = create(:team_membership, user: owner, team: team, email: owner.email, roles: [:owner])
+        team_membership = create(:team_membership, user: owner, team: team, email: owner.email, role: :owner)
 
-        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {roles: [:member]})
+        team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {role: :member})
 
         expect(team_membership.valid?).to be false
       end

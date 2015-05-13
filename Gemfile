@@ -19,7 +19,7 @@ gem 'hashie'
 gem 'settingslogic'
 gem 'devise'
 gem 'simple_token_authentication', '~> 1.0'
-gem 'cancan'
+gem 'cancancan'
 gem 'stripe', '1.20.1'
 
 group :development, :test do
