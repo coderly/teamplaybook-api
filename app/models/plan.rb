@@ -15,8 +15,8 @@ class Plan < ActiveRecord::Base
     find_by slug: slug
   end
 
-  def self.find_or_initialize_by_slug(slug:)
-    Plan.where(slug: slug).first_or_initialize
+  def self.find_or_initialize_by_slug(slug)
+    Plan.where(slug: plan_info.slug).first_or_initialize
   end
 
   private
