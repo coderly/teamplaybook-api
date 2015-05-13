@@ -5,22 +5,25 @@ describe 'team members service' do
     it "should retrieve only team members if the request is from a team subdomain" do
       owner = create(:user)
       team_a = create(:team, :with_users, subdomain: "team-a", number_of_users: 10, owner: owner)
+      create(:team_membership, user: owner, team: team_a, role: :owner)
       team_b = create(:team, :with_users, subdomain: "team-b", number_of_users: 5, owner: owner)
+      create(:team_membership, user: owner, team: team_b, role: :owner)
+
 
       host! "team-a.example.com"
 
       get "/users", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
-      expect(json.data.count).to eq(10)
+      expect(json.data.count).to eq(11)
 
       host! "team-b.example.com"
 
       get "/users", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
 
-      expect(json.data.count).to eq(5)
+      expect(json.data.count).to eq(6)
     end
 
-    it "should return a 401 Not Authorized if requested without proper tokens" do
+    it "should return a 401 Not Authorized if requested by a user who isn't a team member" do
       user = create(:user)
       team = create(:team, subdomain: "test")
 
@@ -34,7 +37,8 @@ describe 'team members service' do
 
     it "should return a 403 Forbidden if requested from a non-team subdomain" do
       owner = create(:user)
-      create(:team, :with_users, number_of_users: 10, owner: owner)
+      team = create(:team, :with_users, number_of_users: 10, owner: owner)
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       host! "www.example.com"
 

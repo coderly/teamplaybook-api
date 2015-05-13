@@ -9,11 +9,19 @@ class ApplicationController < ActionController::API
   protected
 
   def fetch_team
-    @team = Team.find_by_subdomain!(request.subdomain) if has_team_subdomain?
+    @current_team = Team.find_by_subdomain!(request.subdomain) if has_team_subdomain?
   end
 
   def current_ability
-    @current_ability ||= Ability.new(current_user, @team)
+    @current_ability ||= Ability.new(current_user, current_team)
+  end
+
+  def current_team
+    @current_team ||= nil
+  end
+
+  def current_team_membership
+    TeamMembership.find_by!(user: current_user, team: current_team) if current_team.present?
   end
 
   private

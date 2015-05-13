@@ -7,15 +7,16 @@ Rails.application.routes.draw do
 
   get '/me', to: 'me#show'
 
-  resources :teams, only: :create
+  resources :teams, only: [:create, :destroy]
   resources :plans, only: :index
+
   resource :team do
     member do
       post :change_plan
     end
   end
 
-  resources :team_memberships, only: [:index, :create, :update]
+  resources :team_memberships, only: [:index, :show, :create, :update, :destroy], path: '/team-memberships'
   resources :users, only: :index
 
 
