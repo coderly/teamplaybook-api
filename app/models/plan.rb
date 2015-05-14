@@ -22,7 +22,11 @@ class Plan < ActiveRecord::Base
   private
 
   def assign_stripe_plan
-    stripe_plan = fetch_stripe_plan or create_stripe_plan
+    begin
+      stripe_plan = fetch_stripe_plan
+    rescue Stripe::InvalidRequestError
+      stripe_plan = create_stripe_plan
+    end
     update_column :stripe_id, stripe_plan.id
   end
 
