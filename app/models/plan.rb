@@ -22,17 +22,13 @@ class Plan < ActiveRecord::Base
   private
 
   def assign_stripe_plan
-    begin
-      stripe_plan = fetch_stripe_plan
-    rescue Stripe::InvalidRequestError
-      stripe_plan = create_stripe_plan
-    end
+    stripe_plan = fetch_or_create_stripe_plan
     update_column :stripe_id, stripe_plan.id
   end
 
   def update_stripe_plan
     return unless plan_data_changed?
-    stripe_plan = fetch_stripe_plan
+    stripe_plan = fetch_stripe_plan(stripe_id)
     stripe_plan.amount = amount
     stripe_plan.interval = interval
     stripe_plan.name = name
@@ -45,9 +41,19 @@ class Plan < ActiveRecord::Base
     amount_changed? || interval_changed? || name_changed? || trial_period_days_changed?
   end
 
-  def fetch_stripe_plan
-    Stripe::Plan.retrieve(stripe_id) if stripe_id.present?
-    Stripe::Plan.retrieve(slug) if slug.present?
+  def fetch_or_create_stripe_plan
+    stripe_plan = fetch_stripe_plan(stripe_id) if stripe_id.present?
+    stripe_plan = fetch_stripe_plan(slug) if slug.present?
+
+    stripe_plan = create_stripe_plan if stripe_plan == nil
+
+    stripe_plan
+  end
+
+  def fetch_stripe_plan(id)
+    Stripe::Plan.retrieve(id)
+  rescue Stripe::InvalidRequestError
+    nil
   end
 
   def create_stripe_plan
