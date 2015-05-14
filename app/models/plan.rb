@@ -15,14 +15,14 @@ class Plan < ActiveRecord::Base
     find_by slug: slug
   end
 
-  def self.find_or_initialize_by_slug(slug)
-    Plan.where(slug: plan_info.slug).first_or_initialize
+  def self.find_or_initialize_by_slug(slug:)
+    Plan.where(slug: slug).first_or_initialize
   end
 
   private
 
   def assign_stripe_plan
-    stripe_plan = create_stripe_plan
+    stripe_plan = fetch_stripe_plan or create_stripe_plan
     update_column :stripe_id, stripe_plan.id
   end
 
@@ -42,8 +42,8 @@ class Plan < ActiveRecord::Base
   end
 
   def fetch_stripe_plan
-    return null unless stripe_id.present?
-    Stripe::Plan.retrieve(stripe_id)
+    Stripe::Plan.retrieve(stripe_id) if stripe_id.present?
+    Stripe::Plan.retrieve(slug) if slug.present?
   end
 
   def create_stripe_plan
