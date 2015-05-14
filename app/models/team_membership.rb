@@ -8,30 +8,21 @@ class TeamMembership < ActiveRecord::Base
 
   before_destroy :prevent_owner_membership_deletion
 
-  include RoleModel
-  roles :invitee, :member, :admin, :owner
+  enum role: [:invitee, :member, :admin, :owner]
 
   def limit_role_to_invitee_for_unregistered_users
-    if user.blank? and !has_role? :invitee
+    if user.blank? and invitee?
       errors.add(:role, "Cannot change role from invitee until user has registered.")
     end
   end
 
   def limit_role_to_owner_for_team_owner
-    if team.present? and team.owner.present? and user == team.owner and !has_role? :owner
+    if team.present? and team.owner.present? and user == team.owner and !owner?
       errors.add(:role, "Cannot change role from owner.")
     end
   end
 
   def prevent_owner_membership_deletion
-    raise CannotRemoveOwnerFromTeam if has_role? :owner
-  end
-
-  def role=(role)
-    self.roles = [role]
-  end
-
-  def role
-    self.roles.first
+    raise CannotRemoveOwnerFromTeam if owner?
   end
 end
