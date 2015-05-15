@@ -1,3 +1,4 @@
+require 'team_playbook/scenario/archive_team'
 require 'team_playbook/scenario/create_team'
 require 'team_playbook/scenario/change_plan_for_team'
 require 'team_playbook/scenario/add_card_to_team'
@@ -24,7 +25,7 @@ class TeamsController < ApplicationController
   def destroy
     if has_team_subdomain?
       authorize! :destroy, current_team
-      TeamPlaybook::Scenario::DeleteTeam.new.call(team: current_team)
+      TeamPlaybook::Scenario::ArchiveTeam.new.call(team: current_team)
       render nothing: true, status: 204
     else
       forbidden
