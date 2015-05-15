@@ -15,19 +15,4 @@ describe Team do
       expect(team_membership).not_to be_valid
     end
   end
-
-  describe "#role" do
-    it 'Should set roles to a single-element array when setting the role property' do
-      team_membership = build(:team_membership)
-      team_membership.role = :owner
-
-      expect(team_membership.roles.to_a).to eq [:owner]
-    end
-
-    it 'Should retrieve the first role in the role array when retrieving the role property' do
-      team_membership = build(:team_membership, role: :admin)
-
-      expect(team_membership.role).to eq :admin
-    end
-  end
 end

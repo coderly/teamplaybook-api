@@ -17,7 +17,7 @@ describe "Authentication" do
       user = create(:user, email: 'test@test.com', password: 'password', password_confirmation: 'password', authentication_token: 'xcccsswwee')
       team = create(:team, owner: user)
 
-      create(:team_membership, user: user, team: team, role: owner)
+      create(:team_membership, user: user, team: team, role: :owner)
       host! "#{team.subdomain}.example.com"
 
       post '/accounts/tokens', user: { email: 'test@test.com', password: 'password' }

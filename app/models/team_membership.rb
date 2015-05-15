@@ -11,7 +11,7 @@ class TeamMembership < ActiveRecord::Base
   enum role: [:invitee, :member, :admin, :owner]
 
   def limit_role_to_invitee_for_unregistered_users
-    if user.blank? and invitee?
+    if user.blank? and not invitee?
       errors.add(:role, "Cannot change role from invitee until user has registered.")
     end
   end

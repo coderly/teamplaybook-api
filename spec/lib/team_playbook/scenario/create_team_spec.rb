@@ -22,7 +22,7 @@ module TeamPlaybook
 
         team_membership = TeamMembership.where(user: owner, team: team).first
 
-        expect(team_membership.has_role? :owner).to be true
+        expect(team_membership.owner?).to be true
       end
 
       it "should subscribe created team to default plan" do

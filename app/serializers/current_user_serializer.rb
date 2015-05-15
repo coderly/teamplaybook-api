@@ -8,6 +8,6 @@ class CurrentUserSerializer < ActiveModel::Serializer
   end
 
   def role
-    current_team_membership.roles.first.to_s unless current_team_membership.blank?
+    current_team_membership.role unless current_team_membership.blank?
   end
 end

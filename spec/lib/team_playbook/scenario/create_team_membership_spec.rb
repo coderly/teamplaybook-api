@@ -8,7 +8,7 @@ module TeamPlaybook
         team = create(:team)
         team_membership = CreateTeamMembership.new.call(team, email: 'johndoe@example.com')
 
-        expect(team_membership.has_role? :invitee).to be true
+        expect(team_membership.invitee?).to be true
       end
 
       it "should create a team membership with 'member' role when there is a user with specified e-mail" do
@@ -17,7 +17,7 @@ module TeamPlaybook
 
         team_membership = CreateTeamMembership.new.call(team, email: "johndoe@example.com")
 
-        expect(team_membership.has_role? :member).to be true
+        expect(team_membership.member?).to be true
       end
 
       it "should create a team membership with 'owner' role when the user with the specified e-mail is the team owner" do
@@ -26,7 +26,7 @@ module TeamPlaybook
 
         team_membership = CreateTeamMembership.new.call(team, email: owner.email)
 
-        expect(team_membership.has_role? :owner).to be true
+        expect(team_membership.owner?).to be true
       end
     end
   end

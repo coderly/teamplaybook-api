@@ -100,8 +100,8 @@ describe "team_memberships service" do
       owner = create(:user)
       team_member = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
-      create(:team_membership, team: team, user: owner, roles: [:owner])
-      team_membership = create(:team_membership, team: team, user: team_member, roles: [:member])
+      create(:team_membership, team: team, user: owner, role: :owner)
+      team_membership = create(:team_membership, team: team, user: team_member, role: :member)
 
       host! "test.example.com"
 
@@ -114,7 +114,7 @@ describe "team_memberships service" do
     it "should return a 401 Not Authorized if requested from team subdomain by a non-team user" do
       owner = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
-      team_membership = create(:team_membership, team: team, user: owner, roles: [:owner])
+      team_membership = create(:team_membership, team: team, user: owner, role: :owner)
 
       non_team_member = create(:user)
 
@@ -129,7 +129,7 @@ describe "team_memberships service" do
     it "should return a 401 Not Authorized if requested from a team subdomain by an anonymous user" do
       owner = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
-      team_membership = create(:team_membership, team: team, user: owner, roles: [:owner])
+      team_membership = create(:team_membership, team: team, user: owner, role: :owner)
 
       host! "test.example.com"
 
@@ -142,7 +142,7 @@ describe "team_memberships service" do
     it "should return a 403 Forbidden if requested from a non-team subdomain" do
       owner = create(:user)
       team = create(:team, subdomain: "test", owner: owner)
-      team_membership = create(:team_membership, team: team, user: owner, roles: [:owner])
+      team_membership = create(:team_membership, team: team, user: owner, role: :owner)
 
       host! "www.example.com"
 
@@ -447,11 +447,11 @@ describe "team_memberships service" do
     it "should allow a member to remove themselves from the team" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+      create(:team_membership, team: team, user: owner, email: owner.email, role: :owner)
 
 
       team_member = create(:user)
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:member])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
@@ -465,11 +465,11 @@ describe "team_memberships service" do
     it "should allow an admin to remove themselves from the team" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, team: team, user: owner, email: owner.email, roles: [:owner])
+      create(:team_membership, team: team, user: owner, email: owner.email, role: :owner)
 
 
       team_member = create(:user)
-      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, roles: [:admin])
+      team_membership = create(:team_membership, team: team, user: team_member, email: team_member.email, role: :admin)
 
       host! "#{team.subdomain}.example.com"
 
