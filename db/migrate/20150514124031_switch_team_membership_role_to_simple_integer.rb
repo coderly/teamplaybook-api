@@ -1,4 +1,4 @@
-class SwitchTeamMembershipRoleToSimpleString < ActiveRecord::Migration
+class SwitchTeamMembershipRoleToSimpleInteger < ActiveRecord::Migration
   def change
     add_column :team_memberships, :role, :integer
 
