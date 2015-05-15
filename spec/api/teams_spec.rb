@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe "Teams service" do
   describe "POST to create" do
-
     before do
       create(:plan, slug: "free_plan", name: "Free Plan", amount: 0)
       create(:plan, slug: "pro_plan", name: "Pro Plan")
@@ -49,7 +48,6 @@ describe "Teams service" do
       get "/team", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
       expect(json.data.plan_name).to eq "Free Plan"
     end
-
   end
 
   describe "Post to change_plan" do
@@ -186,6 +184,12 @@ describe "Teams service" do
       }
 
       expect(response.code).to eq "204"
+
+      get "/team", {}, {
+        "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
+      }
+
+      expect(response.code).to eq "404"
     end
   end
 end

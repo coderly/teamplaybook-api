@@ -19,7 +19,11 @@ class TeamsController < ApplicationController
   end
 
   def show
-    render json: current_team, status: 200
+    if current_team.active?
+      render json: current_team, status: 200
+    else
+      render json: {error: "Team not found."}, status: 404
+    end
   end
 
   def destroy
