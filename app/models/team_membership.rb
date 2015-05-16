@@ -8,7 +8,7 @@ class TeamMembership < ActiveRecord::Base
 
   before_destroy :prevent_owner_membership_deletion
 
-  enum role: [:invitee, :member, :admin, :owner]
+  enum role: { invitee: 0, member: 1, admin: 2, owner: 3 }
 
   def limit_role_to_invitee_for_unregistered_users
     if user.blank? and not invitee?

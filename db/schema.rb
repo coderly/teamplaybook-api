@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150514124031) do
+ActiveRecord::Schema.define(version: 20150515071915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,12 +45,13 @@ ActiveRecord::Schema.define(version: 20150514124031) do
   end
 
   create_table "teams", force: :cascade do |t|
-    t.string   "name",               null: false
-    t.string   "subdomain",          null: false
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.string   "name",                           null: false
+    t.string   "subdomain",                      null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.integer  "owner_id"
     t.string   "stripe_customer_id"
+    t.integer  "status",             default: 1
   end
 
   create_table "users", force: :cascade do |t|
