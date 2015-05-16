@@ -6,7 +6,7 @@ class Team < ActiveRecord::Base
   validates :name, presence: true
 
   belongs_to :owner, class_name: "User"
-  has_many :team_memberships
+  has_many :team_memberships, dependent: :delete_all
   has_many :members, source: :user, through: :team_memberships
 
   has_one :subscription
