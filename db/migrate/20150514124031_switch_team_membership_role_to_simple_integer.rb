@@ -1,6 +1,6 @@
 class SwitchTeamMembershipRoleToSimpleInteger < ActiveRecord::Migration
   def change
-    add_column :team_memberships, :role, :integer
+    add_column :team_memberships, :role, :integer, nullable: false, default: 0
 
     reversible do |dir|
       TeamMembership.all.each do |team_membership|
