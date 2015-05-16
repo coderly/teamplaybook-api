@@ -98,7 +98,7 @@ describe "Teams service" do
     it "should return a '403 Forbidden' when accessed from non-team subdomain" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       host! "www.example.com"
 
@@ -111,7 +111,7 @@ describe "Teams service" do
     it "should require authorization" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       host! "#{team.subdomain}.example.com"
 
@@ -124,7 +124,7 @@ describe "Teams service" do
     it "should not authorize for a request from a user who is not a member of the team" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       some_other_user = create(:user)
 
@@ -141,10 +141,10 @@ describe "Teams service" do
     it "should not authorize for a request from a user with 'member' role" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       team_member = create(:user)
-      create(:team_membership, user: team_member, team: team, roles: [:member])
+      create(:team_membership, user: team_member, team: team, role: :member)
 
       host! "#{team.subdomain}.example.com"
 
@@ -159,10 +159,10 @@ describe "Teams service" do
     it "should not authorize for a request from a user with 'admin' role" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       team_admin = create(:user)
-      create(:team_membership, user: team_admin, team: team, roles: [:admin])
+      create(:team_membership, user: team_admin, team: team, role: :admin)
 
       host! "#{team.subdomain}.example.com"
 
@@ -177,7 +177,7 @@ describe "Teams service" do
     it "should allow deletion by team owner" do
       owner = create(:user)
       team = create(:team, owner: owner)
-      create(:team_membership, user: owner, team: team, roles: [:owner])
+      create(:team_membership, user: owner, team: team, role: :owner)
 
       host! "#{team.subdomain}.example.com"
 

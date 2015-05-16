@@ -12,7 +12,7 @@ module TeamPlaybook
 
         team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {role: :member})
 
-        expect(team_membership.has_role? :member).to be true
+        expect(team_membership.member?).to be true
         expect(team_membership.valid?).to be true
       end
 
@@ -24,7 +24,7 @@ module TeamPlaybook
 
         team_membership = UpdateTeamMembership.new.call(team_membership: team_membership, params: {role: :admin})
 
-        expect(team_membership.has_role? :admin).to be true
+        expect(team_membership.admin?).to be true
         expect(team_membership.valid?).to be true
       end
 

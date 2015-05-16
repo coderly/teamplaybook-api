@@ -16,7 +16,7 @@ describe "me" do
     it "retrieve the current user with role and membership when called from team subdomain" do
       user = create(:user, email: 'test@test.com', password: 'password', password_confirmation: 'password', authentication_token: 'xcccsswwee')
       team = create(:team, name: "Test", subdomain: "test", owner: user)
-      team_membership = create(:team_membership, team: team, user: user, roles: [:owner])
+      team_membership = create(:team_membership, team: team, user: user, role: :owner)
 
       host! "test.example.com"
 

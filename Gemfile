@@ -11,8 +11,6 @@ gem 'spring', :group => :development
 
 gem 'rack-cors'
 
-gem 'role_model'
-
 gem 'pg'
 gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
 gem 'hashie'

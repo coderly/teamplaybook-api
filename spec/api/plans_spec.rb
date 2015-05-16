@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Plans service' do
   describe 'GET /plans' do
     it "should return all plans" do
-      
+
       create(:plan, name: "Test Plan", amount: 20)
       create(:plan, name: "Free test plan", amount: 0)
 

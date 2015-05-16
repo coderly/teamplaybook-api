@@ -16,8 +16,8 @@ describe "Authentication" do
     it "should return the current team membership if authenticated from a team domain" do
       user = create(:user, email: 'test@test.com', password: 'password', password_confirmation: 'password', authentication_token: 'xcccsswwee')
       team = create(:team, owner: user)
-      create(:team_membership, user: user, team: team, roles: [:owner])
 
+      create(:team_membership, user: user, team: team, role: :owner)
       host! "#{team.subdomain}.example.com"
 
       post '/accounts/tokens', user: { email: 'test@test.com', password: 'password' }
