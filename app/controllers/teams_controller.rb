@@ -8,6 +8,8 @@ class TeamsController < ApplicationController
 
   rescue_from CreditCardRequiredError, with: :credit_card_required
 
+  team_subdomain_only [:show, :destroy, :change_plan]
+
   def create
     team = TeamPlaybook::Scenario::CreateTeam.new.call(team_params: team_params, owner: current_user)
     if team.persisted?
@@ -22,13 +24,9 @@ class TeamsController < ApplicationController
   end
 
   def destroy
-    if has_team_subdomain?
-      authorize! :destroy, current_team
-      TeamPlaybook::Scenario::DeleteTeam.new.call(team: current_team)
-      render nothing: true, status: 204
-    else
-      forbidden
-    end
+    authorize! :destroy, current_team
+    TeamPlaybook::Scenario::DeleteTeam.new.call(team: current_team)
+    render nothing: true, status: 204
   end
 
   def change_plan

@@ -7,6 +7,8 @@ require 'errors/cannot_remove_owner_from_team_error'
 class TeamMembershipsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
 
+  team_subdomain_only :all
+
   def create
     authorize! :create, TeamMembership
     team_membership = TeamPlaybook::Scenario::CreateTeamMembership.new.call(current_team, team_membership_params)
@@ -18,49 +20,33 @@ class TeamMembershipsController < ApplicationController
   end
 
   def update
-    if has_team_subdomain?
-      authorize! :update, current_team_membership
-      team_membership = TeamPlaybook::Scenario::UpdateTeamMembership.new.call(team_membership: current_team_membership, params: team_membership_params)
-      if team_membership.valid?
-        render json: team_membership, status: 200
-      else
-        render json: {error: team_membership.errors[:role].to_sentence}, status: :unprocessable_entity
-      end
+    authorize! :update, current_team_membership
+    team_membership = TeamPlaybook::Scenario::UpdateTeamMembership.new.call(team_membership: current_team_membership, params: team_membership_params)
+    if team_membership.valid?
+      render json: team_membership, status: 200
     else
-      forbidden
+      render json: {error: team_membership.errors[:role].to_sentence}, status: :unprocessable_entity
     end
   end
 
   def destroy
-    if has_team_subdomain?
-      authorize! :destroy, current_team_membership
-      begin
-        TeamPlaybook::Scenario::DeleteTeamMembership.new.call(team_membership: current_team_membership)
-        render nothing: true, status: 204
-      rescue CannotRemoveOwnerFromTeam
-        render json: {error: "Cannot remove team owner from team."}, status: 405
-      end
-    else
-      forbidden
+    authorize! :destroy, current_team_membership
+    begin
+      TeamPlaybook::Scenario::DeleteTeamMembership.new.call(team_membership: current_team_membership)
+      render nothing: true, status: 204
+    rescue CannotRemoveOwnerFromTeam
+      render json: {error: "Cannot remove team owner from team."}, status: 405
     end
   end
 
   def index
-    if has_team_subdomain?
-      authorize! :read, TeamMembership
-      render json: current_team.team_memberships, status: 200
-    else
-      forbidden
-    end
+    authorize! :read, TeamMembership
+    render json: current_team.team_memberships, status: 200
   end
 
   def show
-    if has_team_subdomain?
-      authorize! :read, TeamMembership
-      render json: current_team_membership, status: 200
-    else
-      forbidden
-    end
+    authorize! :read, TeamMembership
+    render json: current_team_membership, status: 200
   end
 
   private
