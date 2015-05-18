@@ -3,21 +3,7 @@ require 'rails_helper'
 describe "Teams service" do
 
   describe "GET /team" do
-    it "should return a 404 for an archived team" do
-      owner = create(:user)
-      team = create(:team, owner: owner, status: :archived)
-      create(:team_membership, user: owner, team: team, role: :owner)
-
-      host! "#{team.subdomain}.example.com"
-
-      get "/team", {}, {
-        "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
-      }
-
-      expect(response.code).to eq "404"
-    end
-
-    it "should return an active team" do
+    it "should return a team" do
       owner = create(:user)
       team = create(:team, name: "Test", subdomain: "test", owner: owner, status: :active)
       create(:team_membership, user: owner, team: team, role: :owner)

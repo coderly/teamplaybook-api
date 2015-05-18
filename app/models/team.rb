@@ -1,5 +1,5 @@
 class Team < ActiveRecord::Base
-  enum status: [:archived, :active]
+  acts_as_paranoid
 
   validates :subdomain, presence: true, exclusion: { in: Settings.reserved_subdomains,
     message: "%{value} is not a valid subdomain." }

@@ -1,5 +1,5 @@
-require 'team_playbook/scenario/archive_team'
 require 'team_playbook/scenario/create_team'
+require 'team_playbook/scenario/delete_team'
 require 'team_playbook/scenario/change_plan_for_team'
 require 'team_playbook/scenario/add_card_to_team'
 require 'errors/credit_card_required_error'
@@ -19,17 +19,13 @@ class TeamsController < ApplicationController
   end
 
   def show
-    if current_team.active?
-      render json: current_team, status: 200
-    else
-      render json: {error: "Team not found."}, status: 404
-    end
+    render json: current_team, status: 200
   end
 
   def destroy
     if has_team_subdomain?
       authorize! :destroy, current_team
-      TeamPlaybook::Scenario::ArchiveTeam.new.call(team: current_team)
+      TeamPlaybook::Scenario::DeleteTeam.new.call(team: current_team)
       render nothing: true, status: 204
     else
       forbidden

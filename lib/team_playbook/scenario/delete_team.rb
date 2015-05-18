@@ -1,8 +1,8 @@
 module TeamPlaybook
   module Scenario
-    class ArchiveTeam
+    class DeleteTeam
       def call(team:)
-        team.archived!
+        team.destroy
       end
     end
   end
