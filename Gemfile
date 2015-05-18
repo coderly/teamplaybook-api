@@ -19,6 +19,7 @@ gem 'devise'
 gem 'simple_token_authentication', '~> 1.0'
 gem 'cancancan'
 gem 'stripe', '1.20.1'
+gem 'has_secure_token'
 
 group :development, :test do
   gem 'pry-rails'
