@@ -3,7 +3,7 @@ class CreatePages < ActiveRecord::Migration
     create_table :pages do |t|
       t.string :title
       t.string :body
-      t.string :root, default: false
+      t.boolean :root, default: false
       t.integer :parent_id
       t.integer :team_id
       t.timestamps null: false

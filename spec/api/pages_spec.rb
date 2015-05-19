@@ -33,4 +33,57 @@ describe 'Pages service' do
       expect(json.data.first.links.children.linkage.map(&:id)).to match_array [child_page.id.to_s, child_page2.id.to_s]
     end
   end
+
+  describe 'POST /pages' do
+    it "should create a page" do
+      owner = create(:user)
+      team = create(:team, subdomain: "test", owner: owner)
+      create(:team_membership, team: team, user: owner, role: :owner)
+
+      host! "test.example.com"
+
+      post "/pages",
+       {data: {
+        title: "Test page",
+        body: "test page body"
+        }
+       },
+       {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      
+      expect(json.data.title).to eq "Test page"
+      expect(json.data.body).to eq "test page body"
+      expect(json.data.root).to eq true
+    end
+
+    it "should create a child page" do
+      owner = create(:user)
+      team = create(:team, subdomain: "test", owner: owner)
+      create(:team_membership, team: team, user: owner, role: :owner)
+
+      root_page = create(:page, title: "Root Test page", root: true, team: team)
+
+      host! "test.example.com"
+
+      post "/pages",
+       {data: {
+        title: "Test page",
+        body: "test page body",
+        parent_id: root_page.id
+        }
+       },
+       {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+      
+      expect(json.data.title).to eq "Test page"
+      expect(json.data.body).to eq "test page body"
+      expect(json.data.root).to eq false
+
+      child_page_id = json.data.id
+
+      get "/pages", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.data.size).to eq 2
+      expect(json.data.first.links.children.linkage.first.id).to eq child_page_id
+    end
+  end
+
 end

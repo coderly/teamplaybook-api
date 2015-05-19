@@ -15,6 +15,8 @@ class Ability
       can :destroy, TeamMembership, team: team, user: user unless current_users_team_membership_in_current_team.owner?
       
       can :read, Page, team: team
+      can :create, Page, team: team
+
     end
   end
 end
