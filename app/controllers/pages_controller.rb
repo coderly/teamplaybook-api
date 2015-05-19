@@ -29,11 +29,11 @@ class PagesController < ApplicationController
   def update
     if has_team_subdomain?
       authorize! :update, current_page
-      team_membership = TeamPlaybook::Scenario::UpdatePage.new.call(page: current_page, page_params: page_params)
-      if team_membership.valid?
-        render json: team_membership, status: 200
+      page = TeamPlaybook::Scenario::UpdatePage.new.call(page: current_page, page_params: page_params)
+      if page.valid?
+        render json: page, status: 200
       else
-        render json: {error: team_membership.errors[:role].to_sentence}, status: :unprocessable_entity
+        render json: {error: page.errors.full_messages.to_sentence}, status: :unprocessable_entity
       end
     else
       forbidden
