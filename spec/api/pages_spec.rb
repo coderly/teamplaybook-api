@@ -42,7 +42,7 @@ describe 'Pages service' do
 
       host! "test.example.com"
 
-      post "/pages",
+      post_json_api "/pages",
        {data: {
         title: "Test page",
         body: "test page body"
@@ -64,7 +64,7 @@ describe 'Pages service' do
 
       host! "test.example.com"
 
-      post "/pages",
+      post_json_api "/pages",
        {data: {
         title: "Test page",
         body: "test page body",
@@ -171,6 +171,59 @@ describe 'Pages service' do
       expect(json.data.first.title).to eq "Edited title"
       expect(json.data.first.body).to eq "Edited body"
     end
+  end
+
+  describe "DELETE /pages/:id" do
+    it "should delete a page" do
+      owner = create(:user)
+      team = create(:team, subdomain: "test", owner: owner)
+      create(:team_membership, team: team, user: owner, role: :owner)
+
+      page = create(:page, title: "root_node Test page", team: team)
+
+      host! "test.example.com"
+
+      get "/pages", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.data.size).to eq 1
+
+      delete "/pages/#{page.id}", {},
+       {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(response.code).to eq "204"
+
+      get "/pages", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.data.size).to eq 0
+    end
+
+    it "should delete the child pages" do
+      owner = create(:user)
+      team = create(:team, subdomain: "test", owner: owner)
+      create(:team_membership, team: team, user: owner, role: :owner)
+
+      root_page = create(:page, title: "root_node Test page", team: team, root_node: true)
+      create(:page, title: "Child page 1", team: team, parent: root_page)
+      create(:page, title: "Child page 2", team: team, parent: root_page)
+
+      create(:page, title: "Another root test page", team: team, root_node: true)
+
+      host! "test.example.com"
+
+      get "/pages", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.data.size).to eq 4
+
+      delete "/pages/#{root_page.id}", {},
+       {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(response.code).to eq "204"
+
+      get "/pages", {}, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(json.data.size).to eq 1
+    end
+
   end
 
 end

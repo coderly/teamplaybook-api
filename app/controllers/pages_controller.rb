@@ -1,5 +1,7 @@
 require 'team_playbook/scenario/create_page'
 require 'team_playbook/scenario/update_page'
+require 'team_playbook/scenario/remove_page'
+
 
 class PagesController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
@@ -38,6 +40,13 @@ class PagesController < ApplicationController
     else
       forbidden
     end
+  end
+
+  def destroy
+    authorize! :destroy, current_page
+
+    TeamPlaybook::Scenario::RemovePage.new.call(current_page)
+    render :nothing => true, :status => 204
   end
 
   private

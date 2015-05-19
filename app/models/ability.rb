@@ -17,7 +17,7 @@ class Ability
       can :read, Page, team: team
       can :create, Page, team: team
       can :update, Page, team: team
-
+      can :destroy, Page, team: team
     end
   end
 end
