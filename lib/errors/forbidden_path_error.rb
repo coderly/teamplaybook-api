@@ -1,0 +1,2 @@
+class ForbiddenPathError < StandardError
+end

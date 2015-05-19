@@ -6,6 +6,8 @@ require 'team_playbook/scenario/remove_page'
 class PagesController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
 
+  before_filter :restrict_to_team_subdomain
+
   def index
     authorize! :read, Page
 
@@ -29,16 +31,12 @@ class PagesController < ApplicationController
   end
 
   def update
-    if has_team_subdomain?
-      authorize! :update, current_page
-      page = TeamPlaybook::Scenario::UpdatePage.new.call(page: current_page, page_params: page_params)
-      if page.valid?
-        render json: page, status: 200
-      else
-        render json: {error: page.errors.full_messages.to_sentence}, status: :unprocessable_entity
-      end
+    authorize! :update, current_page
+    page = TeamPlaybook::Scenario::UpdatePage.new.call(page: current_page, page_params: page_params)
+    if page.valid?
+      render json: page, status: 200
     else
-      forbidden
+      render json: {error: page.errors.full_messages.to_sentence}, status: :unprocessable_entity
     end
   end
 
