@@ -7,8 +7,8 @@ describe 'Pages service' do
       team = create(:team, subdomain: "test", owner: owner)
       create(:team_membership, team: team, user: owner, role: :owner)
 
-      create(:page, title: "Test page", root: true, team: team)
-      create(:page, title: "Test page 2", root: true, team: team)
+      create(:page, title: "Test page", root_node: true, team: team)
+      create(:page, title: "Test page 2", root_node: true, team: team)
 
       host! "test.example.com"
 
@@ -22,9 +22,9 @@ describe 'Pages service' do
       team = create(:team, subdomain: "test", owner: owner)
       create(:team_membership, team: team, user: owner, role: :owner)
 
-      root_page = create(:page, title: "Root Test page", root: true, team: team)
-      child_page = create(:page, title: "Child page 1", root: true, team: team, parent: root_page)
-      child_page2 = create(:page, title: "Child page 2", root: true, team: team, parent: root_page)
+      root_node_page = create(:page, title: "root_node Test page", root_node: true, team: team)
+      child_page = create(:page, title: "Child page 1", root_node: true, team: team, parent: root_node_page)
+      child_page2 = create(:page, title: "Child page 2", root_node: true, team: team, parent: root_node_page)
 
       host! "test.example.com"
 
@@ -52,7 +52,7 @@ describe 'Pages service' do
       
       expect(json.data.title).to eq "Test page"
       expect(json.data.body).to eq "test page body"
-      expect(json.data.root).to eq true
+      expect(json.data.root_node).to eq true
     end
 
     it "should create a child page" do
@@ -60,7 +60,7 @@ describe 'Pages service' do
       team = create(:team, subdomain: "test", owner: owner)
       create(:team_membership, team: team, user: owner, role: :owner)
 
-      root_page = create(:page, title: "Root Test page", root: true, team: team)
+      root_node_page = create(:page, title: "root_node Test page", root_node: true, team: team)
 
       host! "test.example.com"
 
@@ -68,14 +68,14 @@ describe 'Pages service' do
        {data: {
         title: "Test page",
         body: "test page body",
-        parent_id: root_page.id
+        parent_id: root_node_page.id
         }
        },
        {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
       
       expect(json.data.title).to eq "Test page"
       expect(json.data.body).to eq "test page body"
-      expect(json.data.root).to eq false
+      expect(json.data.root_node).to eq false
 
       child_page_id = json.data.id
 

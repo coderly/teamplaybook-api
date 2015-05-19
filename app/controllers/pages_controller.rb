@@ -19,7 +19,6 @@ class PagesController < ApplicationController
     authorize! :create, Page
     page = TeamPlaybook::Scenario::CreatePage.new.call(team: current_team, page_params: page_params)
     if page.persisted?
-      binding.pry
       render json: page, status: 200
     else
       render json: {error: page.errors.full_messages.to_sentence}, status: :unprocessable_entity

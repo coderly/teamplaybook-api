@@ -11,9 +11,8 @@ module TeamPlaybook
 
       def new_page_for_team(team, params)
         page = Page.new(params)
-        binding.pry
         page.team = team
-        page.root = page.parent.nil?
+        page.root_node = page.parent.nil?
         page
       end
 
