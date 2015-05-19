@@ -49,7 +49,7 @@ describe 'Pages service' do
         }
        },
        {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-      
+
       expect(json.data.title).to eq "Test page"
       expect(json.data.body).to eq "test page body"
       expect(json.data.root_node).to eq true
@@ -72,7 +72,7 @@ describe 'Pages service' do
         }
        },
        {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
-      
+
       expect(json.data.title).to eq "Test page"
       expect(json.data.body).to eq "test page body"
       expect(json.data.root_node).to eq false
@@ -83,6 +83,93 @@ describe 'Pages service' do
 
       expect(json.data.size).to eq 2
       expect(json.data.first.links.children.linkage.first.id).to eq child_page_id
+    end
+  end
+
+  describe 'PATCH /pages/:id' do
+
+    it "should return a 403 Forbidden when accessed from a regular subdomain" do
+      owner = create(:user)
+      team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, role: :owner)
+
+      page = create(:page, title: "Test page", body: "Test page body", root_node: true, team: team)
+
+      host! "www.example.com"
+
+      patch_json_api "/pages/#{page.id}", {
+        data: {
+          title: "Edited title",
+          body: "Edited body"
+        }
+      }, {"X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token}
+
+      expect(response.code).to eq "403"
+    end
+
+    it "should return a 401 Not Authorized when requested by an anonymous user" do
+      owner = create(:user)
+      team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, role: :owner)
+
+      page = create(:page, title: "Test page", body: "Test page body", root_node: true, team: team)
+
+      host! "#{team.subdomain}.example.com"
+
+      patch_json_api "/pages/#{page.id}", {
+        data: {
+          title: "Edited title",
+          body: "Edited body"
+        }
+      }
+
+      expect(response.code).to eq "401"
+    end
+
+    it "should return a 401 Not Authorized when requested by a user who isn't a team member" do
+      owner = create(:user)
+      other_user = create(:user)
+      team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, role: :owner)
+
+      page = create(:page, title: "Test page", body: "Test page body", root_node: true, team: team)
+
+      host! "#{team.subdomain}.example.com"
+
+      patch_json_api "/pages/#{page.id}", {
+        data: {
+          title: "Edited title",
+          body: "Edited body"
+        }
+      }, {"X-User-Email" => other_user.email, "X-User-Token" => other_user.authentication_token}
+
+      expect(response.code).to eq "401"
+    end
+
+    it "should update the page when requested by a team member" do
+      owner = create(:user)
+      team_member = create(:user)
+      team = create(:team, owner: owner)
+      create(:team_membership, user: owner, team: team, role: :owner)
+      create(:team_membership, user: team_member, team: team, role: :member)
+      page = create(:page, title: "Test page", body: "Test page body", root_node: true, team: team)
+
+      host! "#{team.subdomain}.example.com"
+
+      patch_json_api "/pages/#{page.id}", {
+        data: {
+          title: "Edited title",
+          body: "Edited body"
+        }
+      }, {"X-User-Email" => team_member.email, "X-User-Token" => team_member.authentication_token}
+
+      expect(response.code).to eq "200"
+
+      get "/pages/", {}, {"X-User-Email" => team_member.email, "X-User-Token" => team_member.authentication_token}
+
+      expect(json.data.count).to eq 1
+      expect(json.data.first.title).to eq "Edited title"
+      expect(json.data.first.body).to eq "Edited body"
     end
   end
 
