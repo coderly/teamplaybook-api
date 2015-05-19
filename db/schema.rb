@@ -52,8 +52,9 @@ ActiveRecord::Schema.define(version: 20150519024822) do
   create_table "pages", force: :cascade do |t|
     t.string   "title"
     t.string   "body"
-    t.string   "root",       default: "t"
+    t.string   "root",       default: "f"
     t.integer  "parent_id"
+    t.integer  "team_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
