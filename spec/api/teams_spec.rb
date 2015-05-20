@@ -1,23 +1,51 @@
 require 'rails_helper'
 
 describe "Teams service" do
-
   describe "GET /team" do
-    it "should return a team" do
-      owner = create(:user)
-      team = create(:team, name: "Test", subdomain: "test", owner: owner, status: :active)
-      create(:team_membership, user: owner, team: team, role: :owner)
+    it "should return a 403 Forbidden when called from non-team subdomain" do
+      user = create(:user)
+      team = create(:team)
+
+      host! "www.example.com"
+
+      get "/team", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      expect(response.code).to eq "403"
+    end
+
+    it "should return a 401 Not Authorized when called from a team subdomain by an unauthenticated user" do
+      team = create(:team)
 
       host! "#{team.subdomain}.example.com"
 
-      get "/team", {}, {
-        "X-User-Email" => owner.email, "X-User-Token" => owner.authentication_token
-      }
+      get "/team"
+
+      expect(response.code).to eq "401"
+    end
+
+    it "should return a 401 Not Authorized when called from a team subdomain by an authenticated non-member of the team" do
+      user = create(:user)
+      team = create(:team)
+
+      host! "#{team.subdomain}.example.com"
+
+      get "/team", {}, {"X-User-Email" => user.email, "X-User-Token" => user.authentication_token}
+
+      expect(response.code).to eq "401"
+    end
+
+    it "should fetch the team when called from a team subdomain by an authenticated team member" do
+      member = create(:user)
+      team = create(:team)
+      team_membership = create(:team_membership, user: member, team: team, role: :member)
+
+      host! "#{team.subdomain}.example.com"
+
+      get "/team", {}, {"X-User-Email" => member.email, "X-User-Token" => member.authentication_token}
 
       expect(response.code).to eq "200"
-
-      expect(json.data.name).to eq "Test"
-      expect(json.data.subdomain).to eq "test"
+      expect(json.data.subdomain).to eq team.subdomain
+      expect(json.data.name).to eq team.name
     end
   end
 
