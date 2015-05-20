@@ -21,12 +21,8 @@ class TeamsController < ApplicationController
   end
 
   def show
-    if has_team_subdomain?
-      authorize! :read, current_team
-      render json: current_team, status: 200
-    else
-      forbidden
-    end
+    authorize! :read, current_team
+    render json: current_team, status: 200
   end
 
   def destroy
