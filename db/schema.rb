@@ -94,7 +94,10 @@ ActiveRecord::Schema.define(version: 20150519024822) do
     t.datetime "updated_at",         null: false
     t.integer  "owner_id"
     t.string   "stripe_customer_id"
+    t.datetime "deleted_at"
   end
+
+  add_index "teams", ["deleted_at"], name: "index_teams_on_deleted_at", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

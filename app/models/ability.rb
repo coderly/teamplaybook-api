@@ -6,6 +6,7 @@ class Ability
 
       current_users_team_membership_in_current_team = TeamMembership.find_by(team: team, user: user)
 
+      can :read, Team if current_users_team_membership_in_current_team.present?
       can :destroy, Team, owner: user
 
       can :create, TeamMembership, team: team if team.owner ==  user

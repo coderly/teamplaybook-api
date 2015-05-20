@@ -1,11 +1,13 @@
-require 'errors/forbidden_path_error'
+require 'team_playbook/team_only_actions'
+require 'errors/action_forbidden_from_regular_subdomain_error'
 
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions
+  include TeamPlaybook::TeamOnlyActions
 
   rescue_from CanCan::AccessDenied, with: :not_authorized
-  rescue_from ActiveRecord::RecordNotFound, :with => :not_found
-  rescue_from ForbiddenPathError, :with => :forbidden
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  rescue_from ActionForbiddenFromRegularSubdomain, with: :forbidden
 
   before_filter :fetch_team
 
@@ -25,10 +27,6 @@ class ApplicationController < ActionController::API
 
   def current_team_membership
     TeamMembership.find_by!(user: current_user, team: current_team) if current_team.present?
-  end
-
-  def restrict_to_team_subdomain
-    raise ForbiddenPathError, "Resource not allowed" unless has_team_subdomain?
   end
 
   private

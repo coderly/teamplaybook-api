@@ -1,2 +1,0 @@
-class ForbiddenPathError < StandardError
-end

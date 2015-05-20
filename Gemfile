@@ -10,6 +10,7 @@ gem 'rails-api'
 gem 'spring', :group => :development
 
 gem 'rack-cors'
+gem "paranoia", "~> 2.0"
 
 gem 'pg'
 gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
@@ -19,6 +20,7 @@ gem 'devise'
 gem 'simple_token_authentication', '~> 1.0'
 gem 'cancancan'
 gem 'stripe', '1.20.1'
+gem 'has_secure_token'
 
 group :development, :test do
   gem 'pry-rails'

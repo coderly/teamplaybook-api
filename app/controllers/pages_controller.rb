@@ -6,7 +6,7 @@ require 'team_playbook/scenario/remove_page'
 class PagesController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
 
-  before_filter :restrict_to_team_subdomain
+  team_subdomain_only :all
 
   def index
     authorize! :read, Page

@@ -1,4 +1,5 @@
 require 'team_playbook/scenario/create_team'
+require 'team_playbook/scenario/delete_team'
 require 'team_playbook/scenario/change_plan_for_team'
 require 'team_playbook/scenario/add_card_to_team'
 require 'errors/credit_card_required_error'
@@ -7,6 +8,8 @@ class TeamsController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback_to_devise: false
 
   rescue_from CreditCardRequiredError, with: :credit_card_required
+
+  team_subdomain_only [:show, :destroy, :change_plan]
 
   def create
     team = TeamPlaybook::Scenario::CreateTeam.new.call(team_params: team_params, owner: current_user)
@@ -18,17 +21,14 @@ class TeamsController < ApplicationController
   end
 
   def show
+    authorize! :read, current_team
     render json: current_team, status: 200
   end
 
   def destroy
-    if has_team_subdomain?
-      authorize! :destroy, current_team
-      TeamPlaybook::Scenario::DeleteTeam.new.call(team: current_team)
-      render nothing: true, status: 204
-    else
-      forbidden
-    end
+    authorize! :destroy, current_team
+    TeamPlaybook::Scenario::DeleteTeam.new.call(team: current_team)
+    render nothing: true, status: 204
   end
 
   def change_plan
