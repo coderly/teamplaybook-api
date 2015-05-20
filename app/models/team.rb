@@ -1,4 +1,6 @@
 class Team < ActiveRecord::Base
+  acts_as_paranoid
+
   validates :subdomain, presence: true, exclusion: { in: Settings.reserved_subdomains,
     message: "%{value} is not a valid subdomain." }
   validates :name, presence: true

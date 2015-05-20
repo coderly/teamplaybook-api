@@ -1,4 +1,5 @@
 require 'team_playbook/scenario/create_team'
+require 'team_playbook/scenario/delete_team'
 require 'team_playbook/scenario/change_plan_for_team'
 require 'team_playbook/scenario/add_card_to_team'
 require 'errors/credit_card_required_error'
@@ -20,7 +21,12 @@ class TeamsController < ApplicationController
   end
 
   def show
-    render json: current_team, status: 200
+    if has_team_subdomain?
+      authorize! :read, current_team
+      render json: current_team, status: 200
+    else
+      forbidden
+    end
   end
 
   def destroy
