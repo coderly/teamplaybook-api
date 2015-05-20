@@ -1,8 +1,12 @@
+require 'team_playbook/team_only_actions'
+
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions
+  include TeamPlaybook::TeamOnlyActions
 
   rescue_from CanCan::AccessDenied, with: :not_authorized
-  rescue_from ActiveRecord::RecordNotFound, :with => :not_found
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  rescue_from ActionForbiddenFromRegularSubdomain, with: :forbidden
 
   before_filter :fetch_team
 
