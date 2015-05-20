@@ -2,6 +2,8 @@ FactoryGirl.define do
   factory :team do |answer|
     sequence(:name) { |n| "Team #{n}" }
     sequence(:subdomain) { |n| "team#{n}" }
+
+    association :subscription
   end
 
   trait :with_users do
