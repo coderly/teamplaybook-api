@@ -1,4 +1,5 @@
 require 'team_playbook/team_only_actions'
+require 'errors/action_forbidden_from_regular_subdomain_error'
 
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions

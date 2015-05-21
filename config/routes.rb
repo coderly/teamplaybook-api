@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   resources :team_memberships, only: [:index, :show, :create, :update, :destroy], path: '/team-memberships'
   resources :users, only: :index
+  resources :pages, only: [:index, :create, :show, :destroy, :update]
 
 
   # The priority is based upon order of creation: first created -> highest priority.

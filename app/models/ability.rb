@@ -14,6 +14,11 @@ class Ability
       can :update, TeamMembership, team: team if current_users_team_membership_in_current_team.admin? or current_users_team_membership_in_current_team.owner?
       can :destroy, TeamMembership, team: team if (team.owner === user)
       can :destroy, TeamMembership, team: team, user: user unless current_users_team_membership_in_current_team.owner?
+
+      can :read, Page, team: team
+      can :create, Page, team: team
+      can :update, Page, team: team
+      can :destroy, Page, team: team
     end
   end
 end
